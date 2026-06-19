@@ -39,29 +39,51 @@ To test the Role-Based Access Control (RBAC) system (Screen C), log in using one
 
 The project is structured with a clean, secure separation between system configuration/logic and the public-facing document root:
 
-```
-FablePress/
-├── app/                   # Application configurations and helpers
-│   ├── Database/          # SQLite database (fablepress.db)
-│   ├── helpers.php        # Global helper functions (autoloaded)
-│   ├── middleware.php     # Global Slim middlewares
-│   ├── repositories.php   # Dependency injection container mappings
-│   ├── routes.php         # HTTP endpoint route definitions
-│   └── settings.php       # App settings and environment loader
-├── public/                # Web document root (served directly)
-│   ├── admin/             # Admin control panel controllers and layouts
-│   ├── assets/            # CSS and image upload folders
-│   ├── index.php          # Front controller bootstrap
-│   ├── migrate.php        # Database SQLite to MySQL migrator
-│   ├── index.html         # Pre-compiled static homepage
-│   ├── stories/           # Pre-compiled catalog and nested stories
-│   └── {slug}/            # Pre-compiled static page directories (like about-us)
-├── src/                   # Domain business logic and services
-│   └── Application/
-│       └── Services/      # Namespaced StaticGenerator.php compilation service
-├── templates/             # PHP layout view templates (home, stories, story)
-├── router.php             # Built-in local PHP web server router
-└── README.md              # Project documentation
+```text
+├── app/                      # Application core configuration & bootstrapping
+│   ├── Database/             # Local database storage (holds fablepress.db SQLite file)
+│   ├── helpers.php           # Global helper functions (auth checks, parsing, dates)
+│   ├── middleware.php        # Global Slim middleware registrations (sessions, body parsing)
+│   ├── repositories.php      # Dependency injection mappings and data layers
+│   ├── routes.php            # HTTP route mapping definitions (GET, POST mapping closures)
+│   └── settings.php          # Database credentials, session bootstrapping, and environment setups
+│
+├── includes/                 # Shared UI layout templates for the backend
+│   ├── header.php            # Admin sidebar navigation and page frame header
+│   └── footer.php            # Closing tags for admin layouts
+│
+├── public/                   # Web server document root (the only public-facing directory)
+│   ├── admin/                # Views and markup for the admin control panel
+│   │   ├── index.php         # Dashboard overview view
+│   │   ├── login.php         # Sign-in interface view
+│   │   ├── media.php         # Media library & upload manager view
+│   │   ├── navigation.php    # Header menu link editor view
+│   │   ├── roles.php         # RBAC roles & permissions control view
+│   │   ├── stories.php       # Stories and pages listings table view
+│   │   └── story-edit.php    # Zen fullscreen content composer view
+│   │
+│   ├── assets/               # Site-wide static asset folders
+│   │   ├── css/              # Stylesheet files
+│   │   │   ├── admin.css     # Admin panel layouts, cards, and custom editor overrides
+│   │   │   └── style.css     # Main public theme layout, typography, and design tokens
+│   │   └── uploads/          # Physical images/files uploaded via the Media Library
+│   │
+│   ├── stories/              # Target folder for statically compiled stories (e.g. /stories/slug/index.html)
+│   ├── index.html            # Pre-compiled static homepage (served instantly to public visitors)
+│   ├── index.php             # Front controller (bootstraps Slim and routes administrative requests)
+│   └── migrate.php           # Database migration utility (moves schemas between SQLite & MySQL)
+│
+├── src/                      # Object-oriented application codebase (PSR-4 App\ namespace)
+│   └── Application/          # Application-level services and controller definitions
+│       ├── Controllers/      # Handles requests, validates inputs, and renders views (AdminController.php)
+│       └── Services/         # SSG compiler engine and file system handlers (StaticGenerator.php)
+│
+├── templates/                # Theme/layout templates for compile-time rendering
+│   ├── home.php              # Home layout template
+│   ├── stories.php           # Category index listing template
+│   └── story.php             # Single story post & static page view template
+│
+└── vendor/                   # Composer dependency directory (Slim, PSR packages, autoloaders)
 ```
 
 ---
