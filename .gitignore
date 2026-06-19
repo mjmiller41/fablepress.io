@@ -4,6 +4,3 @@ fablepress.db
 # User uploaded media
 uploads/*
 !uploads/.gitkeep
-
-# Composer dependencies
-vendor/
