@@ -69,11 +69,11 @@ try {
     </div>
     
     <div style="display: flex; gap: 1rem;">
-        <a href="stories.php?type=all" class="btn <?php echo $filter_type === 'all' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">All</a>
-        <a href="stories.php?type=story" class="btn <?php echo $filter_type === 'story' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">Stories</a>
-        <a href="stories.php?type=page" class="btn <?php echo $filter_type === 'page' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">Pages</a>
+        <a href="/admin/stories/?type=all" class="btn <?php echo $filter_type === 'all' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">All</a>
+        <a href="/admin/stories/?type=story" class="btn <?php echo $filter_type === 'story' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">Stories</a>
+        <a href="/admin/stories/?type=page" class="btn <?php echo $filter_type === 'page' ? 'btn-primary' : 'btn-secondary'; ?> btn-sm">Pages</a>
         
-        <a href="story-edit.php" class="btn btn-accent" style="margin-left: 1rem;">
+        <a href="/admin/stories/edit/" class="btn btn-accent" style="margin-left: 1rem;">
             <i class="fa-solid fa-plus"></i> New Post
         </a>
     </div>
@@ -151,7 +151,7 @@ try {
                                     ?>
                                     
                                     <?php if ($can_edit): ?>
-                                        <a href="story-edit.php?id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Edit">
+                                        <a href="/admin/stories/edit/<?php echo $item['id']; ?>/" class="btn btn-secondary btn-sm" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                     <?php else: ?>
@@ -161,7 +161,7 @@ try {
                                     <?php endif; ?>
 
                                     <?php if ($current_user['role'] !== 'contributor'): ?>
-                                        <a href="stories.php?action=delete&id=<?php echo $item['id']; ?>&type=<?php echo $filter_type; ?>" 
+                                        <a href="/admin/stories/?action=delete&id=<?php echo $item['id']; ?>&type=<?php echo $filter_type; ?>" 
                                            class="btn btn-danger btn-sm" 
                                            onclick="return confirm('Are you sure you want to delete this content?');"
                                            title="Delete">

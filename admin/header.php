@@ -3,13 +3,13 @@ require_once __DIR__ . '/../config.php';
 
 // Check authentication
 if (!is_logged_in()) {
-    header('Location: login.php');
+    header('Location: /admin/login/');
     exit;
 }
 
 $current_user = get_logged_in_user();
 if (!$current_user) {
-    header('Location: logout.php');
+    header('Location: /admin/logout/');
     exit;
 }
 
@@ -39,27 +39,27 @@ if (!isset($page_active)) {
         </a>
         
         <nav>
-            <a href="index.php" class="<?php echo $page_active === 'dashboard' ? 'active' : ''; ?>">
+            <a href="/admin/" class="<?php echo $page_active === 'dashboard' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
             
-            <a href="stories.php" class="<?php echo $page_active === 'stories' ? 'active' : ''; ?>">
+            <a href="/admin/stories/" class="<?php echo $page_active === 'stories' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-book-open"></i> Stories & Pages
             </a>
             
-            <a href="media.php" class="<?php echo $page_active === 'media' ? 'active' : ''; ?>">
+            <a href="/admin/media/" class="<?php echo $page_active === 'media' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-photo-film"></i> Media Library
             </a>
             
-            <a href="navigation.php" class="<?php echo $page_active === 'navigation' ? 'active' : ''; ?>">
+            <a href="/admin/navigation/" class="<?php echo $page_active === 'navigation' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-bars"></i> Navigation
             </a>
             
-            <a href="roles.php" class="<?php echo $page_active === 'roles' ? 'active' : ''; ?>">
+            <a href="/admin/roles/" class="<?php echo $page_active === 'roles' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-user-shield"></i> Roles & Permissions
             </a>
             
-            <a href="users.php" class="<?php echo $page_active === 'users' ? 'active' : ''; ?>">
+            <a href="/admin/users/" class="<?php echo $page_active === 'users' ? 'active' : ''; ?>">
                 <i class="fa-solid fa-users"></i> User Accounts
             </a>
         </nav>
@@ -69,7 +69,7 @@ if (!isset($page_active)) {
                 <strong><?php echo htmlspecialchars($current_user['username']); ?></strong>
                 <span class="badge badge-gold" style="font-size: 0.7rem;"><?php echo get_role_label($current_user['role']); ?></span>
             </div>
-            <a href="logout.php" class="btn btn-danger btn-sm" style="color: #fff; width: 100%;">
+            <a href="/admin/logout/" class="btn btn-danger btn-sm" style="color: #fff; width: 100%;">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
             </a>
         </div>

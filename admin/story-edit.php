@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config.php';
 
 // Check login
 if (!is_logged_in()) {
-    header('Location: login.php');
+    header('Location: /admin/login/');
     exit;
 }
 
@@ -22,13 +22,13 @@ if ($id) {
     $post = $stmt->fetch();
     
     if (!$post) {
-        header('Location: stories.php');
+        header('Location: /admin/stories/');
         exit;
     }
     
     // Authorization check: Contributor can only edit their own posts
     if ($current_user['role'] === 'contributor' && $post['author_id'] != $current_user['id']) {
-        header('Location: stories.php');
+        header('Location: /admin/stories/');
         exit;
     }
 }
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$title, $slug, $content, $type, $category, $tags, $status, $current_user['id']]);
                 $id = $db->lastInsertId();
                 
-                header("Location: story-edit.php?id=$id&created=1");
+                header("Location: /admin/stories/edit/$id/?created=1");
                 exit;
             }
         } catch (Exception $e) {
@@ -195,7 +195,7 @@ if (isset($_GET['created'])) {
         </div>
         
         <div style="display: flex; gap: 0.75rem; align-items: center;">
-            <a href="stories.php" class="btn btn-secondary">
+            <a href="/admin/stories/" class="btn btn-secondary">
                 <i class="fa-solid fa-xmark"></i> Close
             </a>
             

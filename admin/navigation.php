@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
                 $stmt->execute([$title, $url, $position, $target, $form_id]);
                 $message = 'Navigation link updated successfully.';
                 // Reset edit mode
-                header("Location: navigation.php?success=updated");
+                header("Location: /admin/navigation/?success=updated");
                 exit;
             } else {
                 // Insert
@@ -146,7 +146,7 @@ try {
                     <i class="fa-solid fa-save"></i> Save Link
                 </button>
                 <?php if ($edit_item): ?>
-                    <a href="navigation.php" class="btn btn-secondary">Cancel</a>
+                    <a href="/admin/navigation/" class="btn btn-secondary">Cancel</a>
                 <?php endif; ?>
             </div>
         </form>
@@ -178,10 +178,10 @@ try {
                         </div>
                         
                         <div style="display: flex; gap: 0.25rem;">
-                            <a href="navigation.php?edit_id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Edit link settings">
+                            <a href="/admin/navigation/?edit_id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Edit link settings">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <a href="navigation.php?action=delete&id=<?php echo $item['id']; ?>" 
+                            <a href="/admin/navigation/?action=delete&id=<?php echo $item['id']; ?>" 
                                class="btn btn-danger btn-sm" 
                                onclick="return confirm('Are you sure you want to remove this link?');"
                                title="Remove link">

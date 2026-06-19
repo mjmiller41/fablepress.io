@@ -109,7 +109,7 @@ try {
                 <a href="/">Features</a>
                 <a href="/">Themes</a>
                 <a href="/">Pricing</a>
-                <a href="/admin/login.php">Admin Login</a>
+                <a href="/admin/login/">Admin Login</a>
             </div>
         </div>
     </footer>

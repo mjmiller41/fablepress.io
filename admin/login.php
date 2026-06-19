@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config.php';
 
 // If already logged in, redirect to dashboard
 if (is_logged_in()) {
-    header('Location: index.php');
+    header('Location: /admin/');
     exit;
 }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['username'] = $user['username'];
             
-            header('Location: index.php');
+            header('Location: /admin/');
             exit;
         } else {
             $error = 'Invalid username or password.';

@@ -140,7 +140,7 @@ function is_checked($perms, $role, $key, $default) {
                 <button type="submit" name="update_role_permissions" class="btn btn-secondary" style="border-color: var(--color-forest); color: var(--color-forest);">
                     Save Settings
                 </button>
-                <a href="users.php?role=developer" class="btn btn-accent" style="color: #fff;">
+                <a href="/admin/users/?role=developer" class="btn btn-accent" style="color: #fff;">
                     View Users
                 </a>
             </div>
@@ -204,7 +204,7 @@ function is_checked($perms, $role, $key, $default) {
                 <button type="submit" name="update_role_permissions" class="btn btn-secondary" style="border-color: var(--color-forest); color: var(--color-forest);">
                     Save Settings
                 </button>
-                <a href="users.php?role=content_manager" class="btn btn-accent" style="color: #fff;">
+                <a href="/admin/users/?role=content_manager" class="btn btn-accent" style="color: #fff;">
                     View Users
                 </a>
             </div>
@@ -247,7 +247,7 @@ function is_checked($perms, $role, $key, $default) {
                 <button type="submit" name="update_role_permissions" class="btn btn-secondary" style="border-color: var(--color-forest); color: var(--color-forest);">
                     Save Settings
                 </button>
-                <a href="users.php?role=contributor" class="btn btn-accent" style="color: #fff;">
+                <a href="/admin/users/?role=contributor" class="btn btn-accent" style="color: #fff;">
                     View Users
                 </a>
             </div>

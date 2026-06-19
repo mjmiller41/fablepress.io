@@ -206,7 +206,7 @@ function format_bytes($bytes, $precision = 2) {
                                 </button>
                                 
                                 <?php if ($current_user['role'] !== 'contributor'): ?>
-                                    <a href="media.php?action=delete&id=<?php echo $item['id']; ?>" 
+                                    <a href="/admin/media/?action=delete&id=<?php echo $item['id']; ?>" 
                                        class="btn btn-danger btn-sm" 
                                        style="padding: 0.35rem;" 
                                        onclick="return confirm('Delete this file permanently?');"

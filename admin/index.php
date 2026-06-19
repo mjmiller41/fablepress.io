@@ -30,7 +30,7 @@ try {
             Today is <?php echo date('F j, Y'); ?> &bull; Role: <strong><?php echo get_role_label($current_user['role']); ?></strong>
         </p>
     </div>
-    <a href="story-edit.php" class="btn btn-primary">
+    <a href="/admin/stories/edit/" class="btn btn-primary">
         <i class="fa-solid fa-pen-nib"></i> Write New Story
     </a>
 </div>
@@ -60,7 +60,7 @@ try {
     <div class="admin-card" style="grid-column: span 2;">
         <div class="card-header">
             <h3>Recent Stories</h3>
-            <a href="stories.php" class="ui-text" style="color: var(--color-forest);">View All &rarr;</a>
+            <a href="/admin/stories/" class="ui-text" style="color: var(--color-forest);">View All &rarr;</a>
         </div>
         
         <div class="table-container">
@@ -83,7 +83,7 @@ try {
                         <?php foreach ($recent_stories as $story): ?>
                             <tr>
                                 <td style="font-family: var(--font-serif); font-weight: 600;">
-                                    <a href="story-edit.php?id=<?php echo $story['id']; ?>" style="color: var(--color-ink);">
+                                    <a href="/admin/stories/edit/<?php echo $story['id']; ?>/" style="color: var(--color-ink);">
                                         <?php echo htmlspecialchars($story['title']); ?>
                                     </a>
                                     <div style="font-size: 0.75rem; font-family: var(--font-sans); color: var(--color-muted); font-weight: normal; margin-top: 0.25rem;">
@@ -102,7 +102,7 @@ try {
                                     <?php endif; ?>
                                 </td>
                                 <td style="text-align: right;">
-                                    <a href="story-edit.php?id=<?php echo $story['id']; ?>" class="btn btn-secondary btn-sm" title="Edit">
+                                    <a href="/admin/stories/edit/<?php echo $story['id']; ?>/" class="btn btn-secondary btn-sm" title="Edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                 </td>
