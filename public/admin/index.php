@@ -1,26 +1,6 @@
 <?php
 $page_active = 'dashboard';
-require_once __DIR__ . '/../Views/header.php';
-
-$db = get_db_connection();
-
-// Fetch counts
-try {
-    $total_stories = $db->query("SELECT COUNT(*) FROM posts WHERE type = 'story'")->fetchColumn();
-    $published_stories = $db->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn();
-    $draft_stories = $db->query("SELECT COUNT(*) FROM posts WHERE status = 'draft'")->fetchColumn();
-    $total_users = $db->query("SELECT COUNT(*) FROM users")->fetchColumn();
-} catch (Exception $e) {
-    $total_stories = $published_stories = $draft_stories = $total_users = 0;
-}
-
-// Fetch recent stories
-try {
-    $recent_stmt = $db->query("SELECT p.*, u.username as author_name FROM posts p LEFT JOIN users u ON p.author_id = u.id ORDER BY p.created_at DESC LIMIT 5");
-    $recent_stories = $recent_stmt->fetchAll();
-} catch (Exception $e) {
-    $recent_stories = [];
-}
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
@@ -163,5 +143,5 @@ try {
 </div>
 
 <?php
-require_once __DIR__ . '/../Views/footer.php';
+require_once __DIR__ . '/../../includes/footer.php';
 ?>

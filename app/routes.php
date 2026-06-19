@@ -47,91 +47,47 @@ return function (App $app) {
         
         // Dashboard main page
         $group->get('/', function (Request $request, Response $response) {
-            $page_active = 'dashboard';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/index.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->dashboard($request, $response);
         });
 
         // Login page
         $group->map(['GET', 'POST'], '/login/', function (Request $request, Response $response) {
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/login.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->login($request, $response);
         });
 
         // Logout page
         $group->get('/logout/', function (Request $request, Response $response) {
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/logout.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->logout($request, $response);
         });
 
         // Stories list manager
         $group->get('/stories/', function (Request $request, Response $response) {
-            $page_active = 'stories';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/stories.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->stories($request, $response);
         });
 
         // Edit/Create story (id-based path)
         $group->map(['GET', 'POST'], '/stories/edit/{id}/', function (Request $request, Response $response, array $args) {
-            $page_active = 'stories';
-            $_GET['id'] = $args['id']; // Inject route ID parameter for legacy compat
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/story-edit.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->editStory($request, $response, $args);
         });
 
         // Create story (new post, no ID in url path)
         $group->map(['GET', 'POST'], '/stories/edit/', function (Request $request, Response $response) {
-            $page_active = 'stories';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/story-edit.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->editStory($request, $response, []);
         });
 
         // Media library
         $group->map(['GET', 'POST'], '/media/', function (Request $request, Response $response) {
-            $page_active = 'media';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/media.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->media($request, $response);
         });
 
         // Navigation menu editor
         $group->map(['GET', 'POST'], '/navigation/', function (Request $request, Response $response) {
-            $page_active = 'navigation';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/navigation.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->navigation($request, $response);
         });
 
         // Roles and privileges manager
         $group->get('/roles/', function (Request $request, Response $response) {
-            $page_active = 'roles';
-            ob_start();
-            require __DIR__ . '/../public/admin/Controllers/roles.php';
-            $html = ob_get_clean();
-            $response->getBody()->write($html);
-            return $response;
+            return (new \App\Application\Controllers\AdminController())->roles($request, $response);
         });
     });
 

@@ -1,68 +1,6 @@
 <?php
-use App\Application\Services\StaticGenerator;
-
 $page_active = 'stories';
-require_once __DIR__ . '/../Views/header.php';
-
-$db = get_db_connection();
-
-// Handle deletion
-$message = '';
-$message_type = 'success';
-
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $delete_id = (int)$_GET['id'];
-    
-    // First, fetch the post to check ownership
-    $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
-    $stmt->execute([$delete_id]);
-    $post_to_delete = $stmt->fetch();
-    
-    if ($post_to_delete) {
-        // Authorization check:
-        // Contributor can never delete.
-        // Content Manager or Developer can delete any post.
-        if ($current_user['role'] === 'contributor') {
-            $message = 'Unauthorized: Contributors are not permitted to delete stories.';
-            $message_type = 'danger';
-        } else {
-            $del_stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
-            $del_stmt->execute([$delete_id]);
-            $message = 'Post deleted successfully.';
-            
-            // Regenerate static site
-            StaticGenerator::generateAll();
-        }
-    } else {
-        $message = 'Error: Story or Page not found.';
-        $message_type = 'danger';
-    }
-}
-
-// Fetch filter
-$filter_type = isset($_GET['type']) ? trim($_GET['type']) : 'all';
-
-// Build Query
-$query = "SELECT p.*, u.username as author_name FROM posts p LEFT JOIN users u ON p.author_id = u.id";
-$params = [];
-
-if ($filter_type === 'story') {
-    $query .= " WHERE p.type = 'story'";
-} elseif ($filter_type === 'page') {
-    $query .= " WHERE p.type = 'page'";
-}
-
-$query .= " ORDER BY p.created_at DESC";
-
-try {
-    $stmt = $db->prepare($query);
-    $stmt->execute($params);
-    $posts = $stmt->fetchAll();
-} catch (Exception $e) {
-    $posts = [];
-    $message = 'Database error: ' . $e->getMessage();
-    $message_type = 'danger';
-}
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -188,5 +126,5 @@ try {
 </div>
 
 <?php
-require_once __DIR__ . '/../Views/footer.php';
+require_once __DIR__ . '/../../includes/footer.php';
 ?>

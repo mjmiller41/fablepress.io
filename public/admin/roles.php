@@ -1,68 +1,6 @@
 <?php
 $page_active = 'roles';
-require_once __DIR__ . '/../Views/header.php';
-
-// Authorization: Only Developers can modify permissions
-$db = get_db_connection();
-
-$message = '';
-$message_type = 'success';
-
-// Handle permissions updates
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_role_permissions'])) {
-    // Only developers can save changes
-    if ($current_user['role'] !== 'developer') {
-        $message = 'Unauthorized: Only Developers can modify role permissions.';
-        $message_type = 'danger';
-    } else {
-        $role_to_update = $_POST['role_to_update'];
-        
-        $keys = [];
-        if ($role_to_update === 'developer') {
-            $keys = ['edit_theme', 'manage_plugins', 'api_access', 'edit_css_html', 'view_logs', 'deploy_changes'];
-        } elseif ($role_to_update === 'content_manager') {
-            $keys = ['publish_posts', 'edit_pages', 'manage_categories', 'moderate_comments', 'schedule_content', 'create_snippets'];
-        } elseif ($role_to_update === 'contributor') {
-            $keys = ['write_drafts', 'edit_own_posts', 'view_analytics'];
-        }
-        
-        try {
-            foreach ($keys as $key) {
-                $value = isset($_POST[$key]) ? 1 : 0;
-                
-                // Cross-DB safe delete & insert
-                $del = $db->prepare("DELETE FROM role_permissions WHERE role = ? AND permission_key = ?");
-                $del->execute([$role_to_update, $key]);
-                
-                $ins = $db->prepare("INSERT INTO role_permissions (role, permission_key, value) VALUES (?, ?, ?)");
-                $ins->execute([$role_to_update, $key, $value]);
-            }
-            $message = 'Permissions updated for ' . get_role_label($role_to_update) . '.';
-        } catch (Exception $e) {
-            $message = 'Database error: ' . $e->getMessage();
-            $message_type = 'danger';
-        }
-    }
-}
-
-// Fetch current permissions state
-$perms = [];
-try {
-    $stmt = $db->query("SELECT * FROM role_permissions");
-    while ($row = $stmt->fetch()) {
-        $perms[$row['role']][$row['permission_key']] = (int)$row['value'];
-    }
-} catch (Exception $e) {
-    // Falls back to defaults in has_permission()
-}
-
-// Helper to check permission checked state in form
-function is_checked($perms, $role, $key, $default) {
-    if (isset($perms[$role][$key])) {
-        return $perms[$role][$key] === 1 ? 'checked' : '';
-    }
-    return $default === 1 ? 'checked' : '';
-}
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
@@ -257,5 +195,5 @@ function is_checked($perms, $role, $key, $default) {
 </div>
 
 <?php
-require_once __DIR__ . '/../Views/footer.php';
+require_once __DIR__ . '/../../includes/footer.php';
 ?>

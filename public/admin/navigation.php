@@ -1,100 +1,6 @@
 <?php
-use App\Application\Services\StaticGenerator;
-
 $page_active = 'navigation';
-require_once __DIR__ . '/../Views/header.php';
-
-// Authorization Check: Contributor cannot manage navigation
-if ($current_user['role'] === 'contributor' || !has_permission($current_user['role'], 'edit_pages')) {
-    echo '<div class="alert alert-danger">Access Denied: You do not have permissions to edit navigation.</div>';
-    require_once __DIR__ . '/../Views/footer.php';
-    exit;
-}
-
-$db = get_db_connection();
-
-$message = '';
-$message_type = 'success';
-
-$edit_item = null;
-$edit_id = isset($_GET['edit_id']) ? (int)$_GET['edit_id'] : null;
-
-// Load item to edit if requested
-if ($edit_id) {
-    $stmt = $db->prepare("SELECT * FROM navigation WHERE id = ?");
-    $stmt->execute([$edit_id]);
-    $edit_item = $stmt->fetch();
-}
-
-// Handle Form Submission (Add or Edit)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
-    $title = trim($_POST['title'] ?? '');
-    $url = trim($_POST['url'] ?? '');
-    $position = (int)($_POST['position'] ?? 0);
-    $target = trim($_POST['target'] ?? '_self');
-    $form_id = isset($_POST['form_id']) ? (int)$_POST['form_id'] : null;
-    
-    if ($title === '' || $url === '') {
-        $message = 'Error: Title and URL are required.';
-        $message_type = 'danger';
-    } else {
-        try {
-            if ($form_id) {
-                // Update
-                $stmt = $db->prepare("UPDATE navigation SET title = ?, url = ?, position = ?, target = ? WHERE id = ?");
-                $stmt->execute([$title, $url, $position, $target, $form_id]);
-                $message = 'Navigation link updated successfully.';
-                // Regenerate static site
-                StaticGenerator::generateAll();
-                // Reset edit mode
-                header("Location: /admin/navigation/?success=updated");
-                exit;
-            } else {
-                // Insert
-                $stmt = $db->prepare("INSERT INTO navigation (title, url, position, target) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$title, $url, $position, $target]);
-                $message = 'Navigation link added successfully.';
-                // Regenerate static site
-                StaticGenerator::generateAll();
-            }
-        } catch (Exception $e) {
-            $message = 'Database error: ' . $e->getMessage();
-            $message_type = 'danger';
-        }
-    }
-}
-
-// Handle Deletion
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $delete_id = (int)$_GET['id'];
-    
-    try {
-        $stmt = $db->prepare("DELETE FROM navigation WHERE id = ?");
-        $stmt->execute([$delete_id]);
-        $message = 'Navigation link removed successfully.';
-        // Regenerate static site
-        StaticGenerator::generateAll();
-    } catch (Exception $e) {
-        $message = 'Database error: ' . $e->getMessage();
-        $message_type = 'danger';
-    }
-}
-
-if (isset($_GET['success'])) {
-    if ($_GET['success'] === 'updated') {
-        $message = 'Navigation link updated successfully.';
-    }
-}
-
-// Fetch all navigation items
-try {
-    $stmt = $db->query("SELECT * FROM navigation ORDER BY position ASC");
-    $nav_items = $stmt->fetchAll();
-} catch (Exception $e) {
-    $nav_items = [];
-    $message = 'Database error: ' . $e->getMessage();
-    $message_type = 'danger';
-}
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -204,5 +110,5 @@ try {
 </div>
 
 <?php
-require_once __DIR__ . '/../Views/footer.php';
+require_once __DIR__ . '/../../includes/footer.php';
 ?>

@@ -1,37 +1,3 @@
-<?php
-// If already logged in, redirect to dashboard
-if (is_logged_in()) {
-    header('Location: /admin/');
-    exit;
-}
-
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = trim($_POST['password'] ?? '');
-    
-    if ($username !== '' && $password !== '') {
-        $db = get_db_connection();
-        $stmt = $db->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
-        
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_role'] = $user['role'];
-            $_SESSION['username'] = $user['username'];
-            
-            header('Location: /admin/');
-            exit;
-        } else {
-            $error = 'Invalid username or password.';
-        }
-    } else {
-        $error = 'Please enter both username and password.';
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
