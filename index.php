@@ -42,6 +42,10 @@ if ($slug) {
                 <ul>
                     <?php foreach ($nav_items as $item): ?>
                         <?php 
+                            // Hide admin pages from the header navigation
+                            if (strpos($item['url'], 'admin/') !== false) {
+                                continue;
+                            }
                             // Determine if this item is active
                             $is_active = false;
                             if (!$slug && $item['url'] === 'index.php') {
@@ -56,13 +60,6 @@ if ($slug) {
                             </a>
                         </li>
                     <?php endforeach; ?>
-                    <li>
-                        <?php if (is_logged_in()): ?>
-                            <a href="admin/index.php" class="btn btn-primary btn-sm" style="padding: 0.4rem 1rem; color: #fff;">Dashboard</a>
-                        <?php else: ?>
-                            <a href="admin/login.php" class="btn btn-primary btn-sm" style="padding: 0.4rem 1rem; color: #fff;">Start Writing</a>
-                        <?php endif; ?>
-                    </li>
                 </ul>
             </nav>
         </div>
@@ -108,11 +105,11 @@ if ($slug) {
                 <!-- Hero Section -->
                 <section class="hero">
                     <div class="container">
-                        <h1>Your stories deserve a beautiful home.</h1>
-                        <p class="subhead">The simplified CMS for writers, creators, and small brands. No database configs. No plugin bloat. Just pure, distraction-free publishing.</p>
+                        <h1>Thoughts, stories, and ideas.</h1>
+                        <p class="subhead">A publication exploring typography, minimal design, and web technology. Written and compiled with clean, distraction-free simplicity.</p>
                         <div class="hero-ctas">
-                            <a href="admin/login.php" class="btn btn-primary">Launch your site in 60 seconds</a>
-                            <a href="#stories" class="btn btn-secondary">Read latest stories</a>
+                            <a href="stories.php" class="btn btn-primary">Read the Stories</a>
+                            <a href="index.php?slug=about-us" class="btn btn-secondary">About FablePress</a>
                         </div>
                     </div>
                 </section>

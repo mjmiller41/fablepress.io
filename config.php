@@ -132,8 +132,14 @@ function initialize_database($pdo) {
     
     $about_content = "About FablePress.io\n\nFablePress.io is a simplified, distraction-free CMS designed for writers, creators, and small brands. Our mission is to strip away technical bloat, allowing you to focus on your writing.\n\nWe provide a clean, modern aesthetic with premium literary typography and standard publishing tools out of the box.";
     
+    $slow_reading_content = "### Rediscovering the Cadence of Print in a Digital Age\n\nIn a world governed by notification dots and infinite scrolling, the act of reading has undergone a silent mutation. We no longer read; we scan. We search for keywords, skip paragraphs, and consume content in frantic gulps.\n\nBut literature, essays, and deep storytelling require a different posture. They demand *slowness*.\n\n#### Why Typography Matters\n\nThe visual environment of a digital text dictates how our brain processes it. When fonts are generic and lines are crowded, our eyes tire quickly, prompting us to skim. By designing reading environments with generous line spacing, curated serif fonts like Lora or Merriweather, and constrained text widths, we can encourage readers to slow down, dwell on sentences, and fully engage with the author's ideas.";
+    
+    $decoupled_content = "### Marrying the Power of Dynamic Admin with the Speed of Static Output\n\nWhen we look at the modern web ecosystem, we see a clear divide:\n\n- **Dynamic CMS Platforms (WordPress, Drupal)**: Extremely friendly for non-technical writers who need an interface to write, upload images, and click \"Publish.\" However, they are heavy, require constant security updates, and suffer from database query bottlenecks.\n- **Static Site Generators (Jekyll, Hugo)**: Loved by developers for their raw speed, security, and hosting flexibility. But they are completely unusable for clients who do not know Git, Markdown, or terminal commands.\n\n#### The Hybrid Solution\n\nFablePress.io acts as a bridge. Under the hood, FablePress uses a simple, secure database (SQLite or MySQL) to power a sleek editing dashboard. But when you click publish, the backend compiles your templates into pure, static HTML pages.\n\nThere are no database queries executed when a visitor views the live site. Your readers get Jekyll-level performance, while your writers get WordPress-level ease of use.";
+
     $posts = [
         ['Welcome to FablePress.io', 'welcome-to-fablepress', $welcome_content, 'story', 'published', 'General', 'welcome,fablepress', 1],
+        ['The Art of Slow Reading', 'art-of-slow-reading', $slow_reading_content, 'story', 'published', 'Essays', 'reading,typography', 1],
+        ['Why We Built a Decoupled Static CMS', 'why-decoupled-static-cms', $decoupled_content, 'story', 'published', 'Engineering', 'cms,jamstack', 1],
         ['About Us', 'about-us', $about_content, 'page', 'published', 'Company', 'about', 1]
     ];
     
@@ -148,8 +154,9 @@ function initialize_database($pdo) {
     // Seed default navigation
     $nav = [
         ['Home', 'index.php', 1, '_self'],
-        ['About Us', 'index.php?slug=about-us', 2, '_self'],
-        ['Admin Panel', 'admin/index.php', 3, '_self']
+        ['Stories', 'stories.php', 2, '_self'],
+        ['About Us', 'index.php?slug=about-us', 3, '_self'],
+        ['Admin Panel', 'admin/index.php', 4, '_self']
     ];
     $stmt = $pdo->prepare("INSERT OR IGNORE INTO navigation (title, url, position, target) VALUES (?, ?, ?, ?)");
     if (DB_MODE !== 'sqlite') {
