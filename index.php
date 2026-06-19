@@ -109,8 +109,8 @@ if ($slug) {
                         <h1>Thoughts, stories, and ideas.</h1>
                         <p class="subhead">A publication exploring typography, minimal design, and web technology. Written and compiled with clean, distraction-free simplicity.</p>
                         <div class="hero-ctas">
-                            <a href="stories.php" class="btn btn-primary">Read the Stories</a>
-                            <a href="index.php?slug=about-us" class="btn btn-secondary">About FablePress</a>
+                            <a href="/stories/" class="btn btn-primary">Read the Stories</a>
+                            <a href="/about-us/" class="btn btn-secondary">About FablePress</a>
                         </div>
                     </div>
                 </section>
@@ -219,7 +219,7 @@ if ($slug) {
                                 <li>✓ Email Newsletter Integration</li>
                                 <li>✓ No Transaction Fees or Ads</li>
                             </ul>
-                            <a href="admin/login.php" class="btn btn-primary" style="display: block; width: 100%;">Start Your 14-Day Free Trial</a>
+                            <a href="/admin/login.php" class="btn btn-primary" style="display: block; width: 100%;">Start Your 14-Day Free Trial</a>
                         </div>
                     </div>
                 </section>
@@ -239,7 +239,7 @@ if ($slug) {
                 <a href="/">Features</a>
                 <a href="/">Themes</a>
                 <a href="/">Pricing</a>
-                <a href="admin/login.php">Admin Login</a>
+                <a href="/admin/login.php">Admin Login</a>
             </div>
         </div>
     </footer>
