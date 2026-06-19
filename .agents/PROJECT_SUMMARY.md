@@ -45,6 +45,62 @@ graph TD
 
 ---
 
+## 📂 Project Structure & Directory Layout
+
+The codebase separates runtime framework bootstrappers, theme templates, layout components, and static compiled output directories:
+
+```text
+├── app/                      # Application core configuration & bootstrapping
+│   ├── Database/             # Local database storage (holds fablepress.db SQLite file)
+│   ├── helpers.php           # Global helper functions (auth checks, parsing, dates)
+│   ├── middleware.php        # Global Slim middleware registrations (sessions, body parsing)
+│   ├── repositories.php      # Dependency injection mappings and data layers
+│   ├── routes.php            # HTTP route mapping definitions (GET, POST mapping closures)
+│   └── settings.php          # Database credentials, session bootstrapping, and environment setups
+│
+├── includes/                 # Shared UI layout templates for the backend and frontend
+│   ├── admin-footer.php      # Closing layout tags for the admin panel
+│   ├── admin-header.php      # Admin sidebar navigation and page frame header
+│   ├── footer.php            # Shared public website footer
+│   ├── head.php              # Shared public head section (stylesheets, title, viewport)
+│   └── header.php            # Shared public header and navigation bar
+│
+├── public/                   # Web server document root (the only public-facing directory)
+│   ├── admin/                # Views and markup for the admin control panel
+│   │   ├── index.php         # Dashboard overview view
+│   │   ├── login.php         # Sign-in interface view
+│   │   ├── media.php         # Media library & upload manager view
+│   │   ├── navigation.php    # Header menu link editor view
+│   │   ├── roles.php         # RBAC roles & permissions control view
+│   │   ├── stories.php       # Stories and pages listings table view
+│   │   └── story-edit.php    # Zen fullscreen content composer view
+│   │
+│   ├── assets/               # Site-wide static asset folders
+│   │   ├── css/              # Stylesheet files
+│   │   │   ├── admin.css     # Admin panel layout rules (builds on top of style.css)
+│   │   │   └── style.css     # Main public theme layout, typography, and brand design tokens
+│   │   └── uploads/          # Physical images/files uploaded via the Media Library
+│   │
+│   ├── stories/              # Target folder for statically compiled stories (e.g. /stories/slug/index.html)
+│   ├── index.html            # Pre-compiled static homepage (served instantly to public visitors)
+│   ├── index.php             # Front controller (bootstraps Slim and routes administrative requests)
+│   └── migrate.php           # Database migration utility (moves schemas between SQLite & MySQL)
+│
+├── src/                      # Object-oriented application codebase (PSR-4 App\ namespace)
+│   └── Application/          # Application-level services and controller definitions
+│       ├── Controllers/      # Handles requests, validates inputs, and renders views (AdminController.php)
+│       └── Services/         # SSG compiler engine and file system handlers (StaticGenerator.php)
+│
+├── templates/                # Theme/layout templates for compile-time rendering
+│   ├── home.php              # Home layout template
+│   ├── stories.php           # Category index listing template
+│   └── story.php             # Single story post & static page view template
+│
+└── vendor/                   # Composer dependency directory (Slim, PSR packages, autoloaders)
+```
+
+---
+
 ## 🚦 Routing Architecture & Clean URLs
 
 To preserve clean directories and provide an elegant writing workspace, FablePress handles routing differently depending on whether physical files exist.
