@@ -85,6 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$title, $slug, $content, $type, $category, $tags, $status, $id]);
                 $success = 'Post saved successfully.';
                 
+                // Regenerate static site
+                require_once __DIR__ . '/../StaticGenerator.php';
+                StaticGenerator::generateAll();
+                
                 // Reload post data
                 $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
                 $stmt->execute([$id]);
@@ -94,6 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $db->prepare("INSERT INTO posts (title, slug, content, type, category, tags, status, author_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$title, $slug, $content, $type, $category, $tags, $status, $current_user['id']]);
                 $id = $db->lastInsertId();
+                
+                // Regenerate static site
+                require_once __DIR__ . '/../StaticGenerator.php';
+                StaticGenerator::generateAll();
                 
                 header("Location: /admin/stories/edit/$id/?created=1");
                 exit;
@@ -114,7 +122,7 @@ if (isset($_GET['created'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Post - FablePress.io</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="/admin/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Editor Page custom header */
@@ -227,7 +235,7 @@ if (isset($_GET['created'])) {
     </header>
 
     <div class="editor-layout">
-        <form id="editor-form" action="story-edit.php<?php echo $id ? '?id=' . $id : ''; ?>" method="POST" style="display: flex; width: 100%;">
+        <form id="editor-form" action="/admin/stories/edit/<?php echo $id ? $id . '/' : ''; ?>" method="POST" style="display: flex; width: 100%;">
             <!-- Main Content Area -->
             <div class="editor-canvas-container">
                 <div class="editor-canvas">

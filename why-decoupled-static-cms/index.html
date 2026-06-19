@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why We Built a Decoupled Static CMS - FablePress.io</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">F</div>
+                FablePress.io
+            </a>
+            <nav class="main-nav">
+                <ul>
+                                                                    <li class="">
+                            <a href="/" target="_self">
+                                Home                            </a>
+                        </li>
+                                                                    <li class="">
+                            <a href="/stories/" target="_self">
+                                Stories                            </a>
+                        </li>
+                                                                    <li class="">
+                            <a href="/about-us/" target="_self">
+                                About Us                            </a>
+                        </li>
+                                                            </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+                    <!-- Single Article / Page View -->
+            <article class="article-view">
+                <div class="reader-container">
+                    <header class="article-header">
+                        <h1>Why We Built a Decoupled Static CMS</h1>
+                        <div class="article-meta">
+                            <span class="badge badge-gold">Engineering</span>
+                            <span>By <strong>developer</strong></span>
+                            <span>Published on June 19, 2026</span>
+                        </div>
+                    </header>
+                    
+                    <div class="article-content">
+                        <h3>Marrying the Power of Dynamic Admin with the Speed of Static Output</h3>
+<p>When we look at the modern web ecosystem, we see a clear divide:</p>
+<ul>
+<li><strong>Dynamic CMS Platforms (WordPress, Drupal)</strong>: Extremely friendly for non-technical writers who need an interface to write, upload images, and click &quot;Publish.&quot; However, they are heavy, require constant security updates, and suffer from database query bottlenecks.</li>
+<li><strong>Static Site Generators (Jekyll, Hugo)</strong>: Loved by developers for their raw speed, security, and hosting flexibility. But they are completely unusable for clients who do not know Git, Markdown, or terminal commands.</li>
+</ul>
+<p>#### The Hybrid Solution</p>
+<p>FablePress.io acts as a bridge. Under the hood, FablePress uses a simple, secure database (SQLite or MySQL) to power a sleek editing dashboard. But when you click publish, the backend compiles your templates into pure, static HTML pages.</p>
+<p>There are no database queries executed when a visitor views the live site. Your readers get Jekyll-level performance, while your writers get WordPress-level ease of use.</p>                    </div>
+                    
+                    <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--color-border); text-align: center;">
+                        <a href="/" class="btn btn-secondary">&larr; Back to Home</a>
+                    </div>
+                </div>
+            </article>
+            
+            </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div>
+                <a href="/" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
+                <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">© 2026 FablePress.io. All rights reserved.</p>
+            </div>
+            <div style="display: flex; gap: 2rem;">
+                <a href="/">Features</a>
+                <a href="/">Themes</a>
+                <a href="/">Pricing</a>
+                <a href="/admin/login/">Admin Login</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

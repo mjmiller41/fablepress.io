@@ -88,7 +88,7 @@ function is_checked($perms, $role, $key, $default) {
         <h3 class="role-title">Developer</h3>
         <span class="badge badge-gold role-badge">High Access</span>
         
-        <form action="roles.php" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
+        <form action="/admin/roles/" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
             <input type="hidden" name="role_to_update" value="developer">
             
             <ul class="role-permissions-list">
@@ -152,7 +152,7 @@ function is_checked($perms, $role, $key, $default) {
         <h3 class="role-title">Content Manager</h3>
         <span class="badge badge-gold role-badge" style="background-color: var(--color-forest);">Medium Access</span>
         
-        <form action="roles.php" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
+        <form action="/admin/roles/" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
             <input type="hidden" name="role_to_update" value="content_manager">
             
             <ul class="role-permissions-list">
@@ -216,7 +216,7 @@ function is_checked($perms, $role, $key, $default) {
         <h3 class="role-title">Contributor</h3>
         <span class="badge badge-gold role-badge" style="background-color: var(--color-muted);">Limited Access</span>
         
-        <form action="roles.php" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
+        <form action="/admin/roles/" method="POST" style="display: flex; flex-direction: column; flex-grow: 1;">
             <input type="hidden" name="role_to_update" value="contributor">
             
             <ul class="role-permissions-list">

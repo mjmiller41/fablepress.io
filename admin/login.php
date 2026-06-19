@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FablePress.io Admin</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="/admin/admin.css">
     <style>
         .credentials-hint {
             margin-top: 1.5rem;
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
         
-        <form action="login.php" method="POST">
+        <form action="/admin/login/" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" class="form-control" placeholder="e.g. developer" required autofocus>

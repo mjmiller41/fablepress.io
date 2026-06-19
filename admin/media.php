@@ -142,7 +142,7 @@ function format_bytes($bytes, $precision = 2) {
     <div class="admin-card">
         <h3 style="margin-bottom: 1rem; font-size: 1.15rem;">Upload New File</h3>
         
-        <form action="media.php" method="POST" enctype="multipart/form-data">
+        <form action="/admin/media/" method="POST" enctype="multipart/form-data">
             <div style="border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; background-color: var(--color-card); margin-bottom: 1.5rem; position: relative;">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--color-forest); margin-bottom: 1rem; display: block;"></i>
                 <span style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Choose an image file</span>

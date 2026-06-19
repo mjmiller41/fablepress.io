@@ -1,14 +1,33 @@
 <?php
 // FablePress Configuration File
 
-// DB configuration mode: 'sqlite' or 'mysql'
-define('DB_MODE', 'sqlite');
+// Load environment variables from .env file if it exists
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (strpos($line, '#') === 0 || !strpos($line, '=')) {
+            continue;
+        }
+        list($name, $value) = explode('=', $line, 2);
+        $name = trim($name);
+        $value = trim($value);
+        if (preg_match('/^"(.*)"$/', $value, $matches) || preg_match('/^\'(.*)\'$/', $value, $matches)) {
+            $value = $matches[1];
+        }
+        $_ENV[$name] = $value;
+        putenv("$name=$value");
+    }
+}
 
-// MySQL Configuration (uncomment and fill in if using MySQL)
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'fablepress');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// DB configuration mode: 'sqlite' or 'mysql'
+define('DB_MODE', getenv('DB_MODE') ?: 'sqlite');
+
+// MySQL Configuration
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'fablepress');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 
 // SQLite Configuration
 define('DB_SQLITE_PATH', __DIR__ . '/fablepress.db');
@@ -153,10 +172,10 @@ function initialize_database($pdo) {
     
     // Seed default navigation
     $nav = [
-        ['Home', 'index.php', 1, '_self'],
-        ['Stories', 'stories.php', 2, '_self'],
-        ['About Us', 'index.php?slug=about-us', 3, '_self'],
-        ['Admin Panel', 'admin/index.php', 4, '_self']
+        ['Home', '/', 1, '_self'],
+        ['Stories', '/stories/', 2, '_self'],
+        ['About Us', '/about-us/', 3, '_self'],
+        ['Admin Panel', '/admin/', 4, '_self']
     ];
     $stmt = $pdo->prepare("INSERT OR IGNORE INTO navigation (title, url, position, target) VALUES (?, ?, ?, ?)");
     if (DB_MODE !== 'sqlite') {

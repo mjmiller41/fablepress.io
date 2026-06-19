@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
                 $stmt = $db->prepare("UPDATE navigation SET title = ?, url = ?, position = ?, target = ? WHERE id = ?");
                 $stmt->execute([$title, $url, $position, $target, $form_id]);
                 $message = 'Navigation link updated successfully.';
+                // Regenerate static site
+                require_once __DIR__ . '/../StaticGenerator.php';
+                StaticGenerator::generateAll();
                 // Reset edit mode
                 header("Location: /admin/navigation/?success=updated");
                 exit;
@@ -50,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
                 $stmt = $db->prepare("INSERT INTO navigation (title, url, position, target) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$title, $url, $position, $target]);
                 $message = 'Navigation link added successfully.';
+                // Regenerate static site
+                require_once __DIR__ . '/../StaticGenerator.php';
+                StaticGenerator::generateAll();
             }
         } catch (Exception $e) {
             $message = 'Database error: ' . $e->getMessage();
@@ -66,6 +72,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
         $stmt = $db->prepare("DELETE FROM navigation WHERE id = ?");
         $stmt->execute([$delete_id]);
         $message = 'Navigation link removed successfully.';
+        // Regenerate static site
+        require_once __DIR__ . '/../StaticGenerator.php';
+        StaticGenerator::generateAll();
     } catch (Exception $e) {
         $message = 'Database error: ' . $e->getMessage();
         $message_type = 'danger';
@@ -111,7 +120,7 @@ try {
             <?php echo $edit_item ? 'Edit Link' : 'Add New Link'; ?>
         </h3>
         
-        <form action="navigation.php" method="POST">
+        <form action="/admin/navigation/" method="POST">
             <?php if ($edit_item): ?>
                 <input type="hidden" name="form_id" value="<?php echo $edit_item['id']; ?>">
             <?php endif; ?>

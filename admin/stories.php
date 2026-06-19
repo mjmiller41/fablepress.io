@@ -27,6 +27,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
             $del_stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
             $del_stmt->execute([$delete_id]);
             $message = 'Post deleted successfully.';
+            
+            // Regenerate static site
+            require_once __DIR__ . '/../StaticGenerator.php';
+            StaticGenerator::generateAll();
         }
     } else {
         $message = 'Error: Story or Page not found.';
