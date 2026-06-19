@@ -1,6 +1,6 @@
 <?php
 $page_active = 'dashboard';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/admin-header.php';
 ?>
 
 <div style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
@@ -143,5 +143,5 @@ require_once __DIR__ . '/../../includes/header.php';
 </div>
 
 <?php
-require_once __DIR__ . '/../../includes/footer.php';
+require_once __DIR__ . '/../../includes/admin-footer.php';
 ?>

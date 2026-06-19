@@ -1,14 +1,6 @@
 <?php
 $db = get_db_connection();
 
-// Fetch navigation items
-try {
-    $nav_stmt = $db->query("SELECT * FROM navigation ORDER BY position ASC");
-    $nav_items = $nav_stmt->fetchAll();
-} catch (Exception $e) {
-    $nav_items = [];
-}
-
 // Fetch the requested story or page
 $slug = isset($_GET['slug']) ? trim($_GET['slug']) : null;
 $post = null;
@@ -18,49 +10,12 @@ if ($slug) {
     $post_stmt->execute([$slug]);
     $post = $post_stmt->fetch();
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $post ? htmlspecialchars($post['title']) . ' - FablePress.io' : 'Page Not Found - FablePress.io'; ?></title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
 
-    <!-- Header & Navigation -->
-    <header class="site-header">
-        <div class="container header-inner">
-            <a href="/" class="logo">
-                <div class="logo-icon">F</div>
-                FablePress.io
-            </a>
-            <nav class="main-nav">
-                <ul>
-                    <?php foreach ($nav_items as $item): ?>
-                        <?php 
-                            // Hide admin pages from the header navigation
-                            if (strpos($item['url'], 'admin') !== false) {
-                                continue;
-                            }
-                            // Determine if this item is active
-                            $is_active = false;
-                            $clean_url = trim($item['url'], '/');
-                            if ($slug && $clean_url === $slug) {
-                                $is_active = true;
-                            }
-                        ?>
-                        <li class="<?php echo $is_active ? 'active' : ''; ?>">
-                            <a href="<?php echo htmlspecialchars($item['url']); ?>" target="<?php echo htmlspecialchars($item['target']); ?>">
-                                <?php echo htmlspecialchars($item['title']); ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </nav>
-        </div>
-    </header>
+$page_title = $post ? $post['title'] : 'Page Not Found';
+
+require_once __DIR__ . '/../includes/head.php';
+require_once __DIR__ . '/../includes/header.php';
+?>
 
     <!-- Main Content -->
     <main>
@@ -96,21 +51,4 @@ if ($slug) {
         <?php endif; ?>
     </main>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <div>
-                <a href="/" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
-                <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">© 2026 FablePress.io. All rights reserved.</p>
-            </div>
-            <div style="display: flex; gap: 2rem;">
-                <a href="/">Features</a>
-                <a href="/">Themes</a>
-                <a href="/">Pricing</a>
-                <a href="/admin/login/">Admin Login</a>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -1,6 +1,6 @@
 <?php
 $page_active = 'media';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/admin-header.php';
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -132,5 +132,5 @@ require_once __DIR__ . '/../../includes/header.php';
 </script>
 
 <?php
-require_once __DIR__ . '/../../includes/footer.php';
+require_once __DIR__ . '/../../includes/admin-footer.php';
 ?>
