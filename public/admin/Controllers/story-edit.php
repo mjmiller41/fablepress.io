@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/Config/config.php';
+use App\Application\Services\StaticGenerator;
 
 // Check login
 if (!is_logged_in()) {
@@ -86,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success = 'Post saved successfully.';
                 
                 // Regenerate static site
-                require_once __DIR__ . '/../StaticGenerator.php';
                 StaticGenerator::generateAll();
                 
                 // Reload post data
@@ -100,7 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id = $db->lastInsertId();
                 
                 // Regenerate static site
-                require_once __DIR__ . '/../StaticGenerator.php';
                 StaticGenerator::generateAll();
                 
                 header("Location: /admin/stories/edit/$id/?created=1");

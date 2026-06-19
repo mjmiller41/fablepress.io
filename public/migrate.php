@@ -1,10 +1,11 @@
 <?php
-// Load configuration and core function definitions
-require_once __DIR__ . '/app/Config/config.php';
+// Load autoloader and settings configuration
+require_once __DIR__ . '/../vendor/autoload.php';
+(require __DIR__ . '/../app/settings.php')(Slim\Factory\AppFactory::create());
 
 // Security Checks
-// 1. Check if fablepress.db exists in the root directory
-$db_file = __DIR__ . '/app/Database/fablepress.db';
+// 1. Check if fablepress.db exists in the correct directory
+$db_file = __DIR__ . '/../app/Database/fablepress.db';
 $db_exists = file_exists($db_file);
 
 // 2. Check if the configuration is set to MySQL mode
@@ -186,7 +187,7 @@ if (!$is_mysql) {
         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; line-height: 1.4;">
             The active database mode is currently set to <strong>'<?php echo htmlspecialchars(DB_MODE); ?>'</strong>. 
             The target must be <strong>'mysql'</strong> to execute this migration. 
-            Please configure <code>DB_MODE=mysql</code> in your environment variables or <code>config.php</code>.
+            Please configure <code>DB_MODE=mysql</code> in your <code>.env</code> file or environment variables.
         </p>
     </div>
     <div style="text-align: center; margin-top: 1.5rem;">

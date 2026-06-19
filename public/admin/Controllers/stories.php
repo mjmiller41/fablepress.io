@@ -1,4 +1,6 @@
 <?php
+use App\Application\Services\StaticGenerator;
+
 $page_active = 'stories';
 require_once __DIR__ . '/../Views/header.php';
 
@@ -29,7 +31,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
             $message = 'Post deleted successfully.';
             
             // Regenerate static site
-            require_once __DIR__ . '/../StaticGenerator.php';
             StaticGenerator::generateAll();
         }
     } else {

@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../app/Config/config.php';
 $db = get_db_connection();
 
 // Fetch navigation items

@@ -37,25 +37,29 @@ To test the Role-Based Access Control (RBAC) system (Screen C), log in using one
 
 ## 🛠️ Project Structure
 
-The project is organized in a modular architecture separating concerns (config, controllers, views, assets, templates):
+The project is structured with a clean, secure separation between system configuration/logic and the public-facing document root:
 
 ```
 FablePress/
-├── admin/                 # Admin Dashboard Pages & Layouts
-│   ├── assets/            # Admin-specific assets (admin.css)
-│   ├── Controllers/       # Dynamic script logic controllers
-│   └── Views/             # Reusable UI layout elements (header.php, footer.php)
-├── app/                   # Core application system concerns
+├── app/                   # Core application system concerns (outside public root)
 │   ├── Config/            # Settings (config.php) and environment parsing
 │   ├── Database/          # SQLite database (fablepress.db)
 │   └── Services/          # Static compiler engine (StaticGenerator.php)
-├── assets/                # Public assets directory
-│   ├── css/               # Public typography stylesheet (style.css)
-│   └── uploads/           # Media files upload destination
+├── public/                # Public Document Root (served by web server)
+│   ├── admin/             # Admin Dashboard Pages & Layouts
+│   │   ├── assets/        # Admin-specific assets (admin.css)
+│   │   ├── Controllers/   # Dynamic script logic controllers
+│   │   └── Views/         # Reusable UI layout elements (header.php, footer.php)
+│   ├── assets/            # Public assets directory
+│   │   ├── css/           # Public typography stylesheet (style.css)
+│   │   └── uploads/       # Media files upload destination
+│   ├── index.php          # Front-controller endpoint running Slim 4
+│   ├── migrate.php        # SQLite-to-MySQL data migration script
+│   ├── index.html         # Pre-compiled static homepage
+│   ├── stories/           # Pre-compiled static stories list
+│   └── {slug}/            # Pre-compiled static individual pages/stories
 ├── public_templates/      # Shared HTML page layouts used during compiler generation
-├── index.php              # Front-controller endpoint running Slim 4
 ├── router.php             # Built-in local web server router
-├── migrate.php            # SQLite-to-MySQL data migration script
 └── README.md              # Project documentation
 ```
 
@@ -110,4 +114,4 @@ Moving from local development (SQLite) to production (MySQL) is streamlined usin
   4. The script truncates target MySQL tables (`users`, `posts`, `media`, `navigation`, `role_permissions`) and inserts the rows from the SQLite file.
 - **⚠️ Critical Security Requirement**:
   - Once the migration succeeds, the script **automatically deletes** the source `app/Database/fablepress.db` file to prevent exposing raw database records.
-  - **You MUST manually delete `migrate.php`** from the Hostinger server via hPanel File Manager or FTP immediately. Keeping this file on a live server presents a high security risk of unauthorized database wipes.
+  - **You MUST manually delete `public/migrate.php`** from the Hostinger server via hPanel File Manager or FTP immediately. Keeping this file on a live server presents a high security risk of unauthorized database wipes.

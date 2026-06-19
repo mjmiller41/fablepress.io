@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../app/Config/config.php';
-
 // Unset all session variables
 $_SESSION = [];
 

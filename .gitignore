@@ -2,8 +2,8 @@
 app/Database/fablepress.db
 
 # User uploaded media
-assets/uploads/*
-!assets/uploads/.gitkeep
+public/assets/uploads/*
+!public/assets/uploads/.gitkeep
 
 # Environment configurations
 .env

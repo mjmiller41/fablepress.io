@@ -60,11 +60,11 @@ graph TD
 
 ### 1. Local Development (`router.php`)
 When running PHP's built-in web server via `php -S localhost:8000 router.php`, requests are filtered as follows:
-* **Physical Assets**: If the request path points to an actual file or directory (e.g. CSS, images, static `.html` files), the router serves it directly (`return false`).
-* **Virtual Paths**: All dynamic requests (such as admin login, editor pages, or unpublished preview pages) are forwarded directly to the Slim 4 app inside `index.php`.
+* **Physical Assets**: If the request path points to an actual file or directory inside `public/` (e.g. CSS, images, static `.html` files), the router serves it directly.
+* **Virtual Paths**: All dynamic requests (such as admin login, editor pages, or unpublished preview pages) are forwarded directly to the Slim 4 app inside `public/index.php`.
 
-### 2. Production Apache Server (`.htaccess`)
-On shared hosting, Apache executes URL rewriting rules to mimic this behavior:
+### 2. Production Apache Server (`public/.htaccess`)
+On shared hosting, Apache executes URL rewriting rules inside the `public/` document root to mimic this behavior:
 ```apache
 RewriteEngine On
 RewriteBase /
@@ -78,7 +78,7 @@ RewriteRule ^ - [L]
 RewriteRule ^ index.php [QSA,L]
 ```
 
-### 3. Slim 4 Front Controller (`index.php`)
+### 3. Slim 4 Front Controller (`public/index.php`)
 For all non-physical endpoints, the Slim 4 app intercepts requests:
 * **Trailing Slashes**: Middleware automatically normalizes directory-like requests to end with a trailing slash via a `301 Redirect` (e.g. `/admin` redirects to `/admin/`).
 * **Admin Group Routing**: Handles login, dashboard stats, roles, navigation configuration, and story drafting/editing actions.
@@ -92,17 +92,17 @@ The class `StaticGenerator` contains the compilation engine that builds the stat
 
 ### 1. Core Functions
 * **`generateAll()`**: Performs the primary generation workflow:
-  1. **Public Homepage**: Compiles the template at `public_templates/home.php` and writes it directly to the root as `/index.html`.
-  2. **Stories Catalog**: Verifies the `/stories` folder exists, compiles `public_templates/stories-list.php`, and writes it to `/stories/index.html`.
-  3. **Individual Stories & Pages**: Selects all posts with a status of `published`. For each post, it creates a subdirectory matching the post's slug (using `0755` permissions) and compiles it to `/{slug}/index.html`.
-  4. **Stale Folder Cleanup**: Scans the root directory and identifies any subdirectories that do *not* match active published slugs. It purges these directories to avoid stale content, ignoring protected system paths (`admin`, `vendor`, `assets`, `app`, `public_templates`, `stories`, `.git`) and hidden dot-folders.
+  1. **Public Homepage**: Compiles the template at `public_templates/home.php` and writes it to `public/index.html`.
+  2. **Stories Catalog**: Verifies the `public/stories` folder exists, compiles `public_templates/stories-list.php`, and writes it to `public/stories/index.html`.
+  3. **Individual Stories & Pages**: Selects all posts with a status of `published`. For each post, it creates a subdirectory matching the post's slug (using `0755` permissions) and compiles it to `public/{slug}/index.html`.
+  4. **Stale Folder Cleanup**: Scans the `public/` directory and identifies any subdirectories that do *not* match active published slugs. It purges these directories to avoid stale content, ignoring protected public system paths (`admin`, `assets`, `stories`) and hidden dot-folders.
 * **`renderTemplate($templatePath, $slug = null)`**: Renders a template safely using output buffering (`ob_start()`, `ob_get_clean()`). To prevent scope pollution or variable collisions within the generator, the template is evaluated inside a self-invoking closure. If a `$slug` is supplied, it is temporarily injected into `$_GET['slug']` to mimic a dynamic request context.
 * **`deleteDirectory($dir)`**: Recursively deletes directories and files to perform cleanup of removed pages.
 
 ### 2. Rebuilding Hooks
 `StaticGenerator::generateAll()` is tied to key admin database events. It is triggered instantly when:
-* A story/page is published, edited, or deleted (`admin/Controllers/story-edit.php` and `admin/Controllers/stories.php`).
-* The navigation menu links are re-ordered or modified (`admin/Controllers/navigation.php`).
+* A story/page is published, edited, or deleted (`public/admin/Controllers/story-edit.php` and `public/admin/Controllers/stories.php`).
+* The navigation menu links are re-ordered or modified (`public/admin/Controllers/navigation.php`).
 
 ---
 

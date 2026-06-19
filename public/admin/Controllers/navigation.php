@@ -1,4 +1,6 @@
 <?php
+use App\Application\Services\StaticGenerator;
+
 $page_active = 'navigation';
 require_once __DIR__ . '/../Views/header.php';
 
@@ -43,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
                 $stmt->execute([$title, $url, $position, $target, $form_id]);
                 $message = 'Navigation link updated successfully.';
                 // Regenerate static site
-                require_once __DIR__ . '/../StaticGenerator.php';
                 StaticGenerator::generateAll();
                 // Reset edit mode
                 header("Location: /admin/navigation/?success=updated");
@@ -54,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
                 $stmt->execute([$title, $url, $position, $target]);
                 $message = 'Navigation link added successfully.';
                 // Regenerate static site
-                require_once __DIR__ . '/../StaticGenerator.php';
                 StaticGenerator::generateAll();
             }
         } catch (Exception $e) {
@@ -73,7 +73,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
         $stmt->execute([$delete_id]);
         $message = 'Navigation link removed successfully.';
         // Regenerate static site
-        require_once __DIR__ . '/../StaticGenerator.php';
         StaticGenerator::generateAll();
     } catch (Exception $e) {
         $message = 'Database error: ' . $e->getMessage();
