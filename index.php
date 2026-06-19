@@ -27,7 +27,7 @@ if ($slug) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $post ? htmlspecialchars($post['title']) . ' - FablePress.io' : 'FablePress.io - Your stories deserve a beautiful home'; ?></title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -43,14 +43,15 @@ if ($slug) {
                     <?php foreach ($nav_items as $item): ?>
                         <?php 
                             // Hide admin pages from the header navigation
-                            if (strpos($item['url'], 'admin/') !== false) {
+                            if (strpos($item['url'], 'admin') !== false) {
                                 continue;
                             }
                             // Determine if this item is active
                             $is_active = false;
-                            if (!$slug && $item['url'] === 'index.php') {
+                            $clean_url = trim($item['url'], '/');
+                            if (!$slug && $clean_url === '') {
                                 $is_active = true;
-                            } elseif ($slug && strpos($item['url'], 'slug=' . $slug) !== false) {
+                            } elseif ($slug && $clean_url === $slug) {
                                 $is_active = true;
                             }
                         ?>
@@ -85,7 +86,7 @@ if ($slug) {
                     </div>
                     
                     <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--color-border); text-align: center;">
-                        <a href="index.php" class="btn btn-secondary">&larr; Back to Home</a>
+                        <a href="/" class="btn btn-secondary">&larr; Back to Home</a>
                     </div>
                 </div>
             </article>
@@ -97,7 +98,7 @@ if ($slug) {
                 <div class="container" style="text-align: center; padding: 8rem 2rem;">
                     <h2>404: Page Not Found</h2>
                     <p class="text-muted" style="margin-bottom: 2rem;">The story or page you are looking for does not exist or has been unpublished.</p>
-                    <a href="index.php" class="btn btn-primary">Return to Homepage</a>
+                    <a href="/" class="btn btn-primary">Return to Homepage</a>
                 </div>
             <?php else: ?>
                 <!-- Homepage Layout -->
@@ -179,11 +180,11 @@ if ($slug) {
                                         <span>&bull;</span>
                                         <span><?php echo date('M j, Y', strtotime($story['created_at'])); ?></span>
                                     </div>
-                                    <h3><a href="index.php?slug=<?php echo htmlspecialchars($story['slug']); ?>"><?php echo htmlspecialchars($story['title']); ?></a></h3>
+                                    <h3><a href="/<?php echo htmlspecialchars($story['slug']); ?>/"><?php echo htmlspecialchars($story['title']); ?></a></h3>
                                     <div class="story-excerpt">
                                         <?php echo htmlspecialchars($excerpt); ?>
                                     </div>
-                                    <a href="index.php?slug=<?php echo htmlspecialchars($story['slug']); ?>" style="font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <a href="/<?php echo htmlspecialchars($story['slug']); ?>/" style="font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.25rem;">
                                         Read Story &rarr;
                                     </a>
                                 </article>

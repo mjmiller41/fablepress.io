@@ -25,14 +25,14 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stories - FablePress.io</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
     <!-- Header & Navigation -->
     <header class="site-header">
         <div class="container header-inner">
-            <a href="index.php" class="logo">
+            <a href="/" class="logo">
                 <div class="logo-icon">F</div>
                 FablePress.io
             </a>
@@ -41,11 +41,11 @@ try {
                     <?php foreach ($nav_items as $item): ?>
                         <?php 
                             // Hide admin pages from the header navigation
-                            if (strpos($item['url'], 'admin/') !== false) {
+                            if (strpos($item['url'], 'admin') !== false) {
                                 continue;
                             }
                             // Determine if this item is active
-                            $is_active = ($item['url'] === 'stories.php');
+                            $is_active = (trim($item['url'], '/') === 'stories');
                         ?>
                         <li class="<?php echo $is_active ? 'active' : ''; ?>">
                             <a href="<?php echo htmlspecialchars($item['url']); ?>" target="<?php echo htmlspecialchars($item['target']); ?>">
@@ -87,9 +87,9 @@ try {
                                     <span>&bull;</span>
                                     <span><?php echo date('F j, Y', strtotime($story['created_at'])); ?></span>
                                 </div>
-                                <h2 style="font-size: 1.85rem; margin-bottom: 1rem; font-family: var(--font-serif);"><a href="index.php?slug=<?php echo htmlspecialchars($story['slug']); ?>" style="color: var(--color-ink);"><?php echo htmlspecialchars($story['title']); ?></a></h2>
+                                <h2 style="font-size: 1.85rem; margin-bottom: 1rem; font-family: var(--font-serif);"><a href="/<?php echo htmlspecialchars($story['slug']); ?>/" style="color: var(--color-ink);"><?php echo htmlspecialchars($story['title']); ?></a></h2>
                                 <p style="font-size: 1.05rem; line-height: 1.6; color: var(--color-muted); margin-bottom: 1.5rem; font-family: var(--font-serif);"><?php echo htmlspecialchars($excerpt); ?></p>
-                                <a href="index.php?slug=<?php echo htmlspecialchars($story['slug']); ?>" class="btn btn-secondary" style="display: inline-block;">Read Story &rarr;</a>
+                                <a href="/<?php echo htmlspecialchars($story['slug']); ?>/" class="btn btn-secondary" style="display: inline-block;">Read Story &rarr;</a>
                             </article>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -102,13 +102,13 @@ try {
     <footer class="site-footer">
         <div class="container footer-inner">
             <div>
-                <a href="index.php" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
+                <a href="/" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
                 <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">© 2026 FablePress.io. All rights reserved.</p>
             </div>
             <div style="display: flex; gap: 2rem;">
-                <a href="index.php">Features</a>
-                <a href="index.php">Themes</a>
-                <a href="index.php">Pricing</a>
+                <a href="/">Features</a>
+                <a href="/">Themes</a>
+                <a href="/">Pricing</a>
                 <a href="admin/login.php">Admin Login</a>
             </div>
         </div>

@@ -1,0 +1,22 @@
+RewriteEngine On
+RewriteBase /
+
+# Force trailing slash on clean directories/slugs (except actual files)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)\.
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*)$ $1/ [L,R=301]
+
+# Exclude existing files and directories from rewrite rules
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route /stories/ to stories.php
+RewriteRule ^stories/$ stories.php [L,QSA]
+
+# Route /admin/ to admin/index.php
+RewriteRule ^admin/$ admin/index.php [L,QSA]
+
+# Route generic slugs (e.g. /about-us/, /welcome-to-fablepress/) to index.php
+RewriteRule ^([a-zA-Z0-9_-]+)/$ index.php?slug=$1 [L,QSA]

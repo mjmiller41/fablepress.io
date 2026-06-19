@@ -33,7 +33,7 @@ if (!isset($page_active)) {
 <div class="admin-container">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-        <a href="../index.php" class="sidebar-logo" target="_blank">
+        <a href="/" class="sidebar-logo" target="_blank">
             <div class="sidebar-logo-icon">F</div>
             FablePress.io
         </a>
@@ -92,7 +92,7 @@ if (!isset($page_active)) {
                 ?>
             </div>
             <div class="header-actions">
-                <a href="../index.php" class="public-site-link" target="_blank">
+                <a href="/" class="public-site-link" target="_blank">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Public Site
                 </a>
             </div>
