@@ -1,0 +1,6 @@
+# FablePress local database
+fablepress.db
+
+# User uploaded media
+uploads/*
+!uploads/.gitkeep

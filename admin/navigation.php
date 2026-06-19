@@ -1,0 +1,200 @@
+<?php
+$page_active = 'navigation';
+require_once __DIR__ . '/header.php';
+
+// Authorization Check: Contributor cannot manage navigation
+if ($current_user['role'] === 'contributor' || !has_permission($current_user['role'], 'edit_pages')) {
+    echo '<div class="alert alert-danger">Access Denied: You do not have permissions to edit navigation.</div>';
+    require_once __DIR__ . '/footer.php';
+    exit;
+}
+
+$db = get_db_connection();
+
+$message = '';
+$message_type = 'success';
+
+$edit_item = null;
+$edit_id = isset($_GET['edit_id']) ? (int)$_GET['edit_id'] : null;
+
+// Load item to edit if requested
+if ($edit_id) {
+    $stmt = $db->prepare("SELECT * FROM navigation WHERE id = ?");
+    $stmt->execute([$edit_id]);
+    $edit_item = $stmt->fetch();
+}
+
+// Handle Form Submission (Add or Edit)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_nav'])) {
+    $title = trim($_POST['title'] ?? '');
+    $url = trim($_POST['url'] ?? '');
+    $position = (int)($_POST['position'] ?? 0);
+    $target = trim($_POST['target'] ?? '_self');
+    $form_id = isset($_POST['form_id']) ? (int)$_POST['form_id'] : null;
+    
+    if ($title === '' || $url === '') {
+        $message = 'Error: Title and URL are required.';
+        $message_type = 'danger';
+    } else {
+        try {
+            if ($form_id) {
+                // Update
+                $stmt = $db->prepare("UPDATE navigation SET title = ?, url = ?, position = ?, target = ? WHERE id = ?");
+                $stmt->execute([$title, $url, $position, $target, $form_id]);
+                $message = 'Navigation link updated successfully.';
+                // Reset edit mode
+                header("Location: navigation.php?success=updated");
+                exit;
+            } else {
+                // Insert
+                $stmt = $db->prepare("INSERT INTO navigation (title, url, position, target) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$title, $url, $position, $target]);
+                $message = 'Navigation link added successfully.';
+            }
+        } catch (Exception $e) {
+            $message = 'Database error: ' . $e->getMessage();
+            $message_type = 'danger';
+        }
+    }
+}
+
+// Handle Deletion
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $delete_id = (int)$_GET['id'];
+    
+    try {
+        $stmt = $db->prepare("DELETE FROM navigation WHERE id = ?");
+        $stmt->execute([$delete_id]);
+        $message = 'Navigation link removed successfully.';
+    } catch (Exception $e) {
+        $message = 'Database error: ' . $e->getMessage();
+        $message_type = 'danger';
+    }
+}
+
+if (isset($_GET['success'])) {
+    if ($_GET['success'] === 'updated') {
+        $message = 'Navigation link updated successfully.';
+    }
+}
+
+// Fetch all navigation items
+try {
+    $stmt = $db->query("SELECT * FROM navigation ORDER BY position ASC");
+    $nav_items = $stmt->fetchAll();
+} catch (Exception $e) {
+    $nav_items = [];
+    $message = 'Database error: ' . $e->getMessage();
+    $message_type = 'danger';
+}
+?>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h2 style="margin-bottom: 0.25rem;">Navigation Menu Editor</h2>
+        <p class="text-muted" style="margin-bottom: 0; font-family: var(--font-sans); font-size: 0.9rem;">
+            Customize the header links displayed on the public site.
+        </p>
+    </div>
+</div>
+
+<?php if ($message): ?>
+    <div class="alert alert-<?php echo $message_type; ?>">
+        <?php echo htmlspecialchars($message); ?>
+    </div>
+<?php endif; ?>
+
+<div class="nav-editor-layout">
+    <!-- Add / Edit Link Form (Left column) -->
+    <div class="admin-card">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.15rem;">
+            <?php echo $edit_item ? 'Edit Link' : 'Add New Link'; ?>
+        </h3>
+        
+        <form action="navigation.php" method="POST">
+            <?php if ($edit_item): ?>
+                <input type="hidden" name="form_id" value="<?php echo $edit_item['id']; ?>">
+            <?php endif; ?>
+            
+            <div class="form-group">
+                <label for="title">Link Title</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Portfolio" value="<?php echo htmlspecialchars($edit_item['title'] ?? ''); ?>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="url">URL Path</label>
+                <input type="text" id="url" name="url" class="form-control" placeholder="e.g. index.php?slug=about-us" value="<?php echo htmlspecialchars($edit_item['url'] ?? ''); ?>" required>
+                <span style="font-size: 0.7rem; color: var(--color-muted);">Use relative paths like <code>index.php?slug=my-page</code> or full URLs like <code>https://google.com</code>.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="position">Order Position</label>
+                <input type="number" id="position" name="position" class="form-control" placeholder="e.g. 1" value="<?php echo htmlspecialchars($edit_item['position'] ?? '0'); ?>">
+                <span style="font-size: 0.7rem; color: var(--color-muted);">Lower numbers will display first in the navigation bar.</span>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="target">Open In</label>
+                <select id="target" name="target" class="form-control">
+                    <option value="_self" <?php echo ($edit_item && $edit_item['target'] === '_self') ? 'selected' : ''; ?>>Same Window / Tab</option>
+                    <option value="_blank" <?php echo ($edit_item && $edit_item['target'] === '_blank') ? 'selected' : ''; ?>>New Window / Tab</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 0.75rem;">
+                <button type="submit" name="save_nav" class="btn btn-primary" style="flex-grow: 1;">
+                    <i class="fa-solid fa-save"></i> Save Link
+                </button>
+                <?php if ($edit_item): ?>
+                    <a href="navigation.php" class="btn btn-secondary">Cancel</a>
+                <?php endif; ?>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Link Structure (Right column) -->
+    <div class="admin-card">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.15rem;">Navigation Menu Order</h3>
+        
+        <?php if (empty($nav_items)): ?>
+            <div style="text-align: center; padding: 4rem 2rem; color: var(--color-muted);">
+                <p>No navigation links created yet.</p>
+            </div>
+        <?php else: ?>
+            <div style="display: flex; flex-direction: column;">
+                <?php foreach ($nav_items as $item): ?>
+                    <div class="nav-item-row">
+                        <div style="display: flex; align-items: center;">
+                            <span class="badge badge-gold" style="margin-right: 1rem; width: 24px; text-align: center; padding: 0.2rem 0;"><?php echo (int)$item['position']; ?></span>
+                            <div class="nav-item-details">
+                                <div class="nav-item-title"><?php echo htmlspecialchars($item['title']); ?></div>
+                                <div class="nav-item-url">
+                                    <code><?php echo htmlspecialchars($item['url']); ?></code> 
+                                    <?php if ($item['target'] === '_blank'): ?>
+                                        <span style="font-size: 0.65rem; color: var(--color-gold);">(New tab)</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.25rem;">
+                            <a href="navigation.php?edit_id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Edit link settings">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="navigation.php?action=delete&id=<?php echo $item['id']; ?>" 
+                               class="btn btn-danger btn-sm" 
+                               onclick="return confirm('Are you sure you want to remove this link?');"
+                               title="Remove link">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+require_once __DIR__ . '/footer.php';
+?>
