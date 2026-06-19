@@ -85,9 +85,9 @@ try {
                                     <span>&bull;</span>
                                     <span><?php echo date('F j, Y', strtotime($story['created_at'])); ?></span>
                                 </div>
-                                <h2 style="font-size: 1.85rem; margin-bottom: 1rem; font-family: var(--font-serif);"><a href="/<?php echo htmlspecialchars($story['slug']); ?>/" style="color: var(--color-ink);"><?php echo htmlspecialchars($story['title']); ?></a></h2>
+                                <h2 style="font-size: 1.85rem; margin-bottom: 1rem; font-family: var(--font-serif);"><a href="/stories/<?php echo htmlspecialchars($story['slug']); ?>/" style="color: var(--color-ink);"><?php echo htmlspecialchars($story['title']); ?></a></h2>
                                 <p style="font-size: 1.05rem; line-height: 1.6; color: var(--color-muted); margin-bottom: 1.5rem; font-family: var(--font-serif);"><?php echo htmlspecialchars($excerpt); ?></p>
-                                <a href="/<?php echo htmlspecialchars($story['slug']); ?>/" class="btn btn-secondary" style="display: inline-block;">Read Story &rarr;</a>
+                                <a href="/stories/<?php echo htmlspecialchars($story['slug']); ?>/" class="btn btn-secondary" style="display: inline-block;">Read Story &rarr;</a>
                             </article>
                         <?php endforeach; ?>
                     <?php endif; ?>

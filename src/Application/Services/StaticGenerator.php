@@ -35,25 +35,32 @@ class StaticGenerator {
             if (!file_exists($storiesDir)) {
                 mkdir($storiesDir, 0755, true);
             }
-            $storiesHtml = self::renderTemplate(__DIR__ . '/../../../templates/stories-list.php');
+            $storiesHtml = self::renderTemplate(__DIR__ . '/../../../templates/stories.php');
             if (file_put_contents($storiesDir . '/index.html', $storiesHtml) === false) {
                 throw new Exception("Failed to write static stories catalog /public/stories/index.html");
             }
             $results['rendered'][] = 'stories/index.html';
             
-            // 3. Render all published stories and pages -> public/{slug}/index.html
-            $stmt = $db->query("SELECT slug FROM posts WHERE status = 'published'");
+            // 3. Render all published stories and pages -> public/stories/{slug}/index.html or public/{slug}/index.html
+            $stmt = $db->query("SELECT slug, type FROM posts WHERE status = 'published'");
             $publishedPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $activeSlugs = [];
+            $activePageSlugs = [];
+            $activeStorySlugs = [];
             foreach ($publishedPosts as $post) {
                 $slug = $post['slug'];
+                $type = $post['type'];
                 if (empty($slug)) {
                     continue;
                 }
                 
-                $activeSlugs[] = $slug;
-                $postDir = __DIR__ . '/../../../public/' . $slug;
+                if ($type === 'story') {
+                    $activeStorySlugs[] = $slug;
+                    $postDir = __DIR__ . '/../../../public/stories/' . $slug;
+                } else {
+                    $activePageSlugs[] = $slug;
+                    $postDir = __DIR__ . '/../../../public/' . $slug;
+                }
                 
                 if (!file_exists($postDir)) {
                     if (!mkdir($postDir, 0755, true)) {
@@ -62,15 +69,16 @@ class StaticGenerator {
                     }
                 }
                 
-                $postHtml = self::renderTemplate(__DIR__ . '/../../../templates/home.php', $slug);
+                $postHtml = self::renderTemplate(__DIR__ . '/../../../templates/story.php', $slug);
                 if (file_put_contents($postDir . '/index.html', $postHtml) === false) {
                     $results['errors'][] = "Failed to write static index for slug: $slug";
                 } else {
-                    $results['rendered'][] = "$slug/index.html";
+                    $results['rendered'][] = ($type === 'story' ? "stories/$slug/index.html" : "$slug/index.html");
                 }
             }
             
             // 4. Clean up any old static directories that are no longer active published slugs
+            // Clean up pages in public/
             $ignoredDirs = ['admin', 'assets', 'stories'];
             $items = scandir(__DIR__ . '/../../../public/');
             foreach ($items as $item) {
@@ -88,12 +96,34 @@ class StaticGenerator {
                     if (strpos($item, '.') === 0) {
                         continue;
                     }
-                    // If directory is not an active published slug, remove it
-                    if (!in_array($item, $activeSlugs)) {
+                    // If directory is not an active published page slug, remove it
+                    if (!in_array($item, $activePageSlugs)) {
                         if (self::deleteDirectory($dirPath)) {
                             $results['cleaned'][] = $item;
                         } else {
-                            $results['errors'][] = "Failed to clean up directory: $item";
+                            $results['errors'][] = "Failed to clean up page directory: $item";
+                        }
+                    }
+                }
+            }
+
+            // Clean up stories in public/stories/
+            if (file_exists(__DIR__ . '/../../../public/stories/')) {
+                $storyItems = scandir(__DIR__ . '/../../../public/stories/');
+                foreach ($storyItems as $item) {
+                    if ($item === '.' || $item === '..' || $item === 'index.html') {
+                        continue;
+                    }
+                    
+                    $dirPath = __DIR__ . '/../../../public/stories/' . $item;
+                    if (is_dir($dirPath)) {
+                        // If directory is not an active published story slug, remove it
+                        if (!in_array($item, $activeStorySlugs)) {
+                            if (self::deleteDirectory($dirPath)) {
+                                $results['cleaned'][] = 'stories/' . $item;
+                            } else {
+                                $results['errors'][] = "Failed to clean up story directory: stories/$item";
+                            }
                         }
                     }
                 }

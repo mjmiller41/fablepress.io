@@ -120,10 +120,10 @@ function initialize_database($pdo) {
     $decoupled_content = "### Marrying the Power of Dynamic Admin with the Speed of Static Output\n\nWhen we look at the modern web ecosystem, we see a clear divide:\n\n- **Dynamic CMS Platforms (WordPress, Drupal)**: Extremely friendly for non-technical writers who need an interface to write, upload images, and click \"Publish.\" However, they are heavy, require constant security updates, and suffer from database query bottlenecks.\n- **Static Site Generators (Jekyll, Hugo)**: Loved by developers for their raw speed, security, and hosting flexibility. But they are completely unusable for clients who do not know Git, Markdown, or terminal commands.\n\n#### The Hybrid Solution\n\nFablePress.io acts as a bridge. Under the hood, FablePress uses a simple, secure database (SQLite or MySQL) to power a sleek editing dashboard. But when you click publish, the backend compiles your templates into pure, static HTML pages.\n\nThere are no database queries executed when a visitor views the live site. Your readers get Jekyll-level performance, while your writers get WordPress-level ease of use.";
 
     $posts = [
-        ['Welcome to FablePress.io', 'welcome-to-fablepress', $welcome_content, 'story', 'published', 'General', 'welcome,fablepress', 1],
-        ['The Art of Slow Reading', 'art-of-slow-reading', $slow_reading_content, 'story', 'published', 'Essays', 'reading,typography', 1],
-        ['Why We Built a Decoupled Static CMS', 'why-decoupled-static-cms', $decoupled_content, 'story', 'published', 'Engineering', 'cms,jamstack', 1],
-        ['About Us', 'about-us', $about_content, 'page', 'published', 'Company', 'about', 1]
+        ['Welcome to FablePress.io', 'welcome-to-fablepress', $welcome_content, 'story', 'published', 'stories', 'welcome,fablepress', 1],
+        ['The Art of Slow Reading', 'art-of-slow-reading', $slow_reading_content, 'story', 'published', 'stories', 'reading,typography', 1],
+        ['Why We Built a Decoupled Static CMS', 'why-decoupled-static-cms', $decoupled_content, 'story', 'published', 'stories', 'cms,jamstack', 1],
+        ['About Us', 'about-us', $about_content, 'page', 'published', 'page', 'about', 1]
     ];
     
     $stmt = $pdo->prepare("INSERT OR IGNORE INTO posts (title, slug, content, type, status, category, tags, author_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");

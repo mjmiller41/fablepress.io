@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $slug = trim($_POST['slug'] ?? '');
     $content = $_POST['content'] ?? '';
     $type = trim($_POST['type'] ?? 'story');
-    $category = trim($_POST['category'] ?? 'General');
+    $category = trim($_POST['category'] ?? 'stories');
     $tags = trim($_POST['tags'] ?? '');
     $status = trim($_POST['status'] ?? 'draft');
     
@@ -295,11 +295,8 @@ if (isset($_GET['created'])) {
                 <div class="form-group">
                     <label for="post-category">Category</label>
                     <select id="post-category" name="category" class="form-control">
-                        <option value="General" <?php echo ($post && $post['category'] === 'General') ? 'selected' : ''; ?>>General</option>
-                        <option value="Opinion" <?php echo ($post && $post['category'] === 'Opinion') ? 'selected' : ''; ?>>Opinion</option>
-                        <option value="Review" <?php echo ($post && $post['category'] === 'Review') ? 'selected' : ''; ?>>Review</option>
-                        <option value="News" <?php echo ($post && $post['category'] === 'News') ? 'selected' : ''; ?>>News</option>
-                        <option value="Company" <?php echo ($post && $post['category'] === 'Company') ? 'selected' : ''; ?>>Company</option>
+                        <option value="stories" <?php echo ($post && strtolower($post['category']) === 'stories') ? 'selected' : ''; ?>>Stories</option>
+                        <option value="page" <?php echo ($post && strtolower($post['category']) === 'page') ? 'selected' : ''; ?>>Page</option>
                     </select>
                 </div>
                 

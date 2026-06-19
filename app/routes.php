@@ -22,7 +22,19 @@ return function (App $app) {
     // Stories/Blog Catalog List
     $app->get('/stories/', function (Request $request, Response $response) {
         ob_start();
-        require __DIR__ . '/../templates/stories-list.php';
+        require __DIR__ . '/../templates/stories.php';
+        $html = ob_get_clean();
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+    // Single Story Details Page (e.g. /stories/welcome-to-fablepress/)
+    $app->get('/stories/{slug}/', function (Request $request, Response $response, array $args) {
+        $slug = $args['slug'];
+        $_GET['slug'] = $slug; // Inject slug for compatibility
+        
+        ob_start();
+        require __DIR__ . '/../templates/story.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -130,7 +142,7 @@ return function (App $app) {
         $_GET['slug'] = $slug; // Inject slug for public-home.php compatibility
         
         ob_start();
-        require __DIR__ . '/../templates/home.php';
+        require __DIR__ . '/../templates/story.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
