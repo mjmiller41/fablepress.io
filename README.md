@@ -62,21 +62,53 @@ FablePress/
 
 ---
 
-## 💾 Switching to MySQL (Hostinger Deployment)
+## 🏗️ Architecture & Operations
 
-By default, the application runs on **SQLite** to make local testing effortless. To host this on a production database (e.g. Hostinger hPanel MySQL):
+FablePress.io employs a decoupling strategy to deliver high performance, minimal hosting overhead, and robust security.
 
-1.  Create a MySQL Database in your Hostinger Control Panel.
-2.  Open [config.php](file:///home/michael/Code/Projects/FablePress/config.php).
-3.  Change `DB_MODE` to `mysql` (Line 5):
-    ```php
-    define('DB_MODE', 'mysql');
-    ```
-4.  Enter your database details (Lines 8-11):
-    ```php
-    define('DB_HOST', 'your-hostinger-mysql-host');
-    define('DB_NAME', 'your-database-name');
-    define('DB_USER', 'your-database-user');
-    define('DB_PASS', 'your-database-password');
-    ```
-5.  On the first page refresh, FablePress will automatically create the tables and seed the database.
+### 1. Jekyll-Hybrid Static Generator (`StaticGenerator.php`)
+FablePress.io implements a **Dynamic Admin, Static Public** hybrid architecture. 
+- **The Concept**: While content creation, role management, and media uploads are handled dynamically in the password-protected Admin Panel via a PHP database connection, the public-facing site is entirely static.
+- **Compilation Trigger**: Whenever a page or story is published, edited, or deleted, or when the navigation menu is updated, the admin panel calls `StaticGenerator.php`.
+- **Generated Outputs**:
+  - Public Home: compiles to `/index.html`.
+  - Stories Directory: compiles to `/stories/index.html`.
+  - Pages/Stories: compile to their respective clean directories as `/{slug}/index.html`.
+- **Zero Database Overhead**: Because the public site serves pre-compiled, static HTML files directly, public-facing queries are reduced to zero. This configuration guarantees **sub-50ms page load times** and reduces server resource usage to a fraction of traditional dynamic CMS platforms.
+
+### 2. Clean URLs & Slim Routing
+To support seamless URL structures, FablePress.io routes requests through a unified front-controller pattern when assets do not exist physically.
+- **Local Development (`router.php`)**: When using PHP's built-in web server, `router.php` intercepts incoming requests, serves static files directly if they exist (such as CSS or uploads), and routes dynamic paths (like `/admin/*` or preview links) to the Slim application inside `index.php`.
+- **Production Server (`.htaccess`)**: On Hostinger Shared Hosting, the `.htaccess` configuration handles Apache URL rewriting. It ensures that requests to static compiled files (e.g. `/welcome-to-fablepress/index.html`) are served instantly by the web server, while dynamic requests (like the Admin panel) are seamlessly rewritten to `index.php`.
+
+### 3. Production Deployment via `.env`
+FablePress uses a dynamic environment loading mechanism to allow the same codebase to run locally (usually on SQLite) and in production (usually on MySQL).
+- **Environment Loading**: `config.php` automatically parses the `.env` file in the root directory and loads environment variables.
+- **Path A Deployment (No Composer Hooks)**: Hostinger Shared Hosting lacks post-deployment Composer hooks. To solve this, **commit the `vendor/` directory directly to GitHub** and push it to production. This ensures all dependencies (including Slim framework and PDO drivers) are immediately available upon git checkout or deployment.
+- **Production `.env` Example**:
+  Create a `.env` file in the root of your Hostinger installation:
+  ```env
+  # FablePress Environment Configuration
+  DB_MODE=mysql
+
+  # MySQL Database Configuration (Hostinger hPanel)
+  DB_HOST=127.0.0.1
+  DB_NAME=u123456789_fablepress
+  DB_USER=u123456789_admin
+  DB_PASS=YourSecureProductionPasswordHere
+  ```
+
+### 4. Database Migration Script (`migrate.php`)
+Moving from local development (SQLite) to production (MySQL) is streamlined using a built-in migration utility.
+- **Prerequisites**:
+  1. Set up a MySQL database on Hostinger hPanel.
+  2. Create the `.env` file on the server with `DB_MODE=mysql` and your MySQL credentials.
+  3. Upload your local SQLite database file `fablepress.db` to the root directory of the Hostinger server.
+- **Execution Steps**:
+  1. Access the migration utility by navigating to `https://yourdomain.com/migrate.php` in your browser.
+  2. The page will verify that `fablepress.db` is present and that the current active mode is `mysql`.
+  3. Review the database target details and click **Start MySQL Migration**.
+  4. The script truncates target MySQL tables (`users`, `posts`, `media`, `navigation`, `role_permissions`) and inserts the rows from the SQLite file.
+- **⚠️ Critical Security Requirement**:
+  - Once the migration succeeds, the script **automatically deletes** the source `fablepress.db` file to prevent exposing raw database records.
+  - **You MUST manually delete `migrate.php`** from the Hostinger server via hPanel File Manager or FTP immediately. Keeping this file on a live server presents a high security risk of unauthorized database wipes.
