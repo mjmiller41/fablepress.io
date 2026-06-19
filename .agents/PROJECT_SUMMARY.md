@@ -12,7 +12,7 @@ FablePress.io utilizes a decoupled **Jekyll-Hybrid** (Dynamic Admin, Static Publ
 graph TD
     subgraph "Dynamic Admin Environment (PHP + SQLite/MySQL)"
         Admin[Admin Dashboard /admin/] -->|Write Content / Manage Settings| DB[(Database: SQLite / MySQL)]
-        Admin -->|Triggers Rebuild| SG["app/Services/StaticGenerator.php"]
+        Admin -->|Triggers Rebuild| SG["src/Application/Services/StaticGenerator.php"]
     end
 
     subgraph "Static Generation Pipeline"
@@ -86,7 +86,7 @@ For all non-physical endpoints, the Slim 4 app intercepts requests:
 
 ---
 
-## ⚙️ Static Site Compiler (`app/Services/StaticGenerator.php`)
+## ⚙️ Static Site Compiler (`src/Application/Services/StaticGenerator.php`)
 
 The class `StaticGenerator` contains the compilation engine that builds the static public distribution. 
 
@@ -101,8 +101,8 @@ The class `StaticGenerator` contains the compilation engine that builds the stat
 
 ### 2. Rebuilding Hooks
 `StaticGenerator::generateAll()` is tied to key admin database events. It is triggered instantly when:
-* A story/page is published, edited, or deleted (`public/admin/Controllers/story-edit.php` and `public/admin/Controllers/stories.php`).
-* The navigation menu links are re-ordered or modified (`public/admin/Controllers/navigation.php`).
+* A story/page is published, edited, or deleted (`App\Application\Controllers\AdminController::editStory` and `App\Application\Controllers\AdminController::stories`).
+* The navigation menu links are re-ordered or modified (`App\Application\Controllers\AdminController::navigation`).
 
 ---
 
