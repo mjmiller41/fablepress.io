@@ -92,10 +92,10 @@ The class `StaticGenerator` contains the compilation engine that builds the stat
 
 ### 1. Core Functions
 * **`generateAll()`**: Performs the primary generation workflow:
-  1. **Public Homepage**: Compiles the template at `public_templates/home.php` and writes it to `public/index.html`.
-  2. **Stories Catalog**: Verifies the `public/stories` folder exists, compiles `public_templates/stories-list.php`, and writes it to `public/stories/index.html`.
-  3. **Individual Stories & Pages**: Selects all posts with a status of `published`. For each post, it creates a subdirectory matching the post's slug (using `0755` permissions) and compiles it to `public/{slug}/index.html`.
-  4. **Stale Folder Cleanup**: Scans the `public/` directory and identifies any subdirectories that do *not* match active published slugs. It purges these directories to avoid stale content, ignoring protected public system paths (`admin`, `assets`, `stories`) and hidden dot-folders.
+  1. **Public Homepage**: Compiles the template at `templates/home.php` and writes it to `public/index.html`.
+  2. **Stories Catalog**: Verifies the `public/stories` folder exists, compiles `templates/stories.php`, and writes it to `public/stories/index.html`.
+  3. **Individual Stories & Pages**: Selects all posts with a status of `published`. If the category is 'stories', it compiles it to `public/stories/{slug}/index.html`. Otherwise, it compiles it to `public/{slug}/index.html`.
+  4. **Stale Folder Cleanup**: Scans the `public/` and `public/stories/` directories and identifies any subdirectories that do *not* match active published slugs for pages and stories. It purges these directories to avoid stale content.
 * **`renderTemplate($templatePath, $slug = null)`**: Renders a template safely using output buffering (`ob_start()`, `ob_get_clean()`). To prevent scope pollution or variable collisions within the generator, the template is evaluated inside a self-invoking closure. If a `$slug` is supplied, it is temporarily injected into `$_GET['slug']` to mimic a dynamic request context.
 * **`deleteDirectory($dir)`**: Recursively deletes directories and files to perform cleanup of removed pages.
 

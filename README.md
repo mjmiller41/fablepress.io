@@ -41,25 +41,26 @@ The project is structured with a clean, secure separation between system configu
 
 ```
 FablePress/
-├── app/                   # Core application system concerns (outside public root)
-│   ├── Config/            # Settings (config.php) and environment parsing
+├── app/                   # Application configurations and helpers
 │   ├── Database/          # SQLite database (fablepress.db)
-│   └── Services/          # Static compiler engine (StaticGenerator.php)
-├── public/                # Public Document Root (served by web server)
-│   ├── admin/             # Admin Dashboard Pages & Layouts
-│   │   ├── assets/        # Admin-specific assets (admin.css)
-│   │   ├── Controllers/   # Dynamic script logic controllers
-│   │   └── Views/         # Reusable UI layout elements (header.php, footer.php)
-│   ├── assets/            # Public assets directory
-│   │   ├── css/           # Public typography stylesheet (style.css)
-│   │   └── uploads/       # Media files upload destination
-│   ├── index.php          # Front-controller endpoint running Slim 4
-│   ├── migrate.php        # SQLite-to-MySQL data migration script
+│   ├── helpers.php        # Global helper functions (autoloaded)
+│   ├── middleware.php     # Global Slim middlewares
+│   ├── repositories.php   # Dependency injection container mappings
+│   ├── routes.php         # HTTP endpoint route definitions
+│   └── settings.php       # App settings and environment loader
+├── public/                # Web document root (served directly)
+│   ├── admin/             # Admin control panel controllers and layouts
+│   ├── assets/            # CSS and image upload folders
+│   ├── index.php          # Front controller bootstrap
+│   ├── migrate.php        # Database SQLite to MySQL migrator
 │   ├── index.html         # Pre-compiled static homepage
-│   ├── stories/           # Pre-compiled static stories list
-│   └── {slug}/            # Pre-compiled static individual pages/stories
-├── public_templates/      # Shared HTML page layouts used during compiler generation
-├── router.php             # Built-in local web server router
+│   ├── stories/           # Pre-compiled catalog and nested stories
+│   └── {slug}/            # Pre-compiled static page directories (like about-us)
+├── src/                   # Domain business logic and services
+│   └── Application/
+│       └── Services/      # Namespaced StaticGenerator.php compilation service
+├── templates/             # PHP layout view templates (home, stories, story)
+├── router.php             # Built-in local PHP web server router
 └── README.md              # Project documentation
 ```
 
@@ -74,19 +75,19 @@ FablePress.io implements a **Dynamic Admin, Static Public** hybrid architecture.
 - **The Concept**: While content creation, role management, and media uploads are handled dynamically in the password-protected Admin Panel via a PHP database connection, the public-facing site is entirely static.
 - **Compilation Trigger**: Whenever a page or story is published, edited, or deleted, or when the navigation menu is updated, the admin panel calls `StaticGenerator.php`.
 - **Generated Outputs**:
-  - Public Home: compiles to `/index.html`.
-  - Stories Directory: compiles to `/stories/index.html`.
-  - Pages/Stories: compile to their respective clean directories as `/{slug}/index.html`.
+  - Public Home: compiles to `public/index.html`.
+  - Stories Directory: compiles to `public/stories/index.html`.
+  - Pages/Stories: compile based on their category setting. Posts with category 'stories' compile to `public/stories/{slug}/index.html`, and pages compile to `public/{slug}/index.html`.
 - **Zero Database Overhead**: Because the public site serves pre-compiled, static HTML files directly, public-facing queries are reduced to zero. This configuration guarantees **sub-50ms page load times** and reduces server resource usage to a fraction of traditional dynamic CMS platforms.
 
 ### 2. Clean URLs & Slim Routing
 To support seamless URL structures, FablePress.io routes requests through a unified front-controller pattern when assets do not exist physically.
-- **Local Development (`router.php`)**: When using PHP's built-in web server, `router.php` intercepts incoming requests, serves static files directly if they exist (such as CSS or uploads), and routes dynamic paths (like `/admin/*` or preview links) to the Slim application inside `index.php`.
-- **Production Server (`.htaccess`)**: On Hostinger Shared Hosting, the `.htaccess` configuration handles Apache URL rewriting. It ensures that requests to static compiled files (e.g. `/welcome-to-fablepress/index.html`) are served instantly by the web server, while dynamic requests (like the Admin panel) are seamlessly rewritten to `index.php`.
+- **Local Development (`router.php`)**: When using PHP's built-in web server, `router.php` intercepts incoming requests, serves static files directly from `public/` if they exist (such as CSS or uploads), and routes dynamic paths (like `/admin/*` or preview links) to the Slim application inside `public/index.php`.
+- **Production Server (`public/.htaccess`)**: On Hostinger Shared Hosting, the `.htaccess` configuration handles Apache URL rewriting inside `public/`. It ensures that requests to static compiled files (e.g. `/stories/welcome-to-fablepress/index.html`) are served instantly by the web server, while dynamic requests (like the Admin panel) are seamlessly rewritten to `index.php`.
 
 ### 3. Production Deployment via `.env`
 FablePress uses a dynamic environment loading mechanism to allow the same codebase to run locally (usually on SQLite) and in production (usually on MySQL).
-- **Environment Loading**: `config.php` automatically parses the `.env` file in the root directory and loads environment variables.
+- **Environment Loading**: `app/settings.php` automatically parses the `.env` file in the root directory and loads environment variables.
 - **Path A Deployment (No Composer Hooks)**: Hostinger Shared Hosting lacks post-deployment Composer hooks. To solve this, **commit the `vendor/` directory directly to GitHub** and push it to production. This ensures all dependencies (including Slim framework and PDO drivers) are immediately available upon git checkout or deployment.
 - **Production `.env` Example**:
   Create a `.env` file in the root of your Hostinger installation:
