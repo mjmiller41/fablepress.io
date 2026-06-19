@@ -37,26 +37,25 @@ To test the Role-Based Access Control (RBAC) system (Screen C), log in using one
 
 ## 🛠️ Project Structure
 
-The project has been organized according to standard modular practices:
+The project is organized in a modular architecture separating concerns (config, controllers, views, assets, templates):
 
 ```
 FablePress/
-├── admin/                 # Admin Dashboard Pages
-│   ├── admin.css          # Admin Premium CSS Stylesheet
-│   ├── footer.php         # Admin Shared Footer layout
-│   ├── header.php         # Admin Shared Sidebar Layout & RBAC enforcement
-│   ├── index.php          # Admin Main Dashboard Stats
-│   ├── login.php          # Secure Admin Session Authentication
-│   ├── logout.php         # Session Destroyer
-│   ├── media.php          # Drag-and-drop Media Uploader & Library
-│   ├── navigation.php     # Interactive Navigation Menu Hierarchy Editor
-│   ├── roles.php          # RBAC Roles Configuration Dashboard
-│   ├── stories.php        # Stories List & Metadata View
-│   └── story-edit.php     # Centered, Distraction-Free Page/Story Editor
-├── uploads/               # Directory where uploaded images/files are stored
-├── config.php             # Core Database connection, schema migrations, and helpers
-├── index.php              # Public site router and dynamic templates renderer
-├── style.css              # Premium Public stylesheet (Serif typography & Cream tone)
+├── admin/                 # Admin Dashboard Pages & Layouts
+│   ├── assets/            # Admin-specific assets (admin.css)
+│   ├── Controllers/       # Dynamic script logic controllers
+│   └── Views/             # Reusable UI layout elements (header.php, footer.php)
+├── app/                   # Core application system concerns
+│   ├── Config/            # Settings (config.php) and environment parsing
+│   ├── Database/          # SQLite database (fablepress.db)
+│   └── Services/          # Static compiler engine (StaticGenerator.php)
+├── assets/                # Public assets directory
+│   ├── css/               # Public typography stylesheet (style.css)
+│   └── uploads/           # Media files upload destination
+├── public_templates/      # Shared HTML page layouts used during compiler generation
+├── index.php              # Front-controller endpoint running Slim 4
+├── router.php             # Built-in local web server router
+├── migrate.php            # SQLite-to-MySQL data migration script
 └── README.md              # Project documentation
 ```
 
@@ -103,12 +102,12 @@ Moving from local development (SQLite) to production (MySQL) is streamlined usin
 - **Prerequisites**:
   1. Set up a MySQL database on Hostinger hPanel.
   2. Create the `.env` file on the server with `DB_MODE=mysql` and your MySQL credentials.
-  3. Upload your local SQLite database file `fablepress.db` to the root directory of the Hostinger server.
+  3. Upload your local SQLite database file `fablepress.db` to the `app/Database/` directory of the Hostinger server.
 - **Execution Steps**:
   1. Access the migration utility by navigating to `https://yourdomain.com/migrate.php` in your browser.
-  2. The page will verify that `fablepress.db` is present and that the current active mode is `mysql`.
+  2. The page will verify that `fablepress.db` is present in `app/Database/` and that the current active mode is `mysql`.
   3. Review the database target details and click **Start MySQL Migration**.
   4. The script truncates target MySQL tables (`users`, `posts`, `media`, `navigation`, `role_permissions`) and inserts the rows from the SQLite file.
 - **⚠️ Critical Security Requirement**:
-  - Once the migration succeeds, the script **automatically deletes** the source `fablepress.db` file to prevent exposing raw database records.
+  - Once the migration succeeds, the script **automatically deletes** the source `app/Database/fablepress.db` file to prevent exposing raw database records.
   - **You MUST manually delete `migrate.php`** from the Hostinger server via hPanel File Manager or FTP immediately. Keeping this file on a live server presents a high security risk of unauthorized database wipes.

@@ -166,7 +166,7 @@ if (!$db_exists) {
         <i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.5rem;"></i>
         <strong>Migration SQLite database (fablepress.db) not found.</strong>
         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; line-height: 1.4;">
-            Please upload your local <code>fablepress.db</code> to the root directory first.
+            Please upload your local <code>fablepress.db</code> to the <code>app/Database/</code> directory first.
         </p>
     </div>
     <div style="text-align: center; margin-top: 1.5rem;">
