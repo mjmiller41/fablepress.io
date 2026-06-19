@@ -14,7 +14,7 @@ FablePress.io requires **zero initial database configuration** when using SQLite
 Navigate to the FablePress directory in your terminal and start PHP's built-in web server:
 ```bash
 cd /home/michael/Code/Projects/FablePress
-php -S localhost:8000
+php -S localhost:8000 router.php
 ```
 
 ### 2. Access the Application
