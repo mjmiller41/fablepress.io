@@ -51,17 +51,7 @@ $app->get('/stories/', function (Request $request, Response $response) {
     return $response;
 });
 
-// Dynamic Slug-based Stories and Pages (e.g. /about-us/, /welcome-to-fablepress/)
-$app->get('/{slug}/', function (Request $request, Response $response, array $args) {
-    $slug = $args['slug'];
-    $_GET['slug'] = $slug; // Inject slug for public-home.php compatibility
-    
-    ob_start();
-    require __DIR__ . '/public-home.php';
-    $html = ob_get_clean();
-    $response->getBody()->write($html);
-    return $response;
-});
+
 
 // ==========================================
 // 2. ADMIN PORTAL ROUTES
@@ -157,6 +147,19 @@ $app->group('/admin', function ($group) {
         $response->getBody()->write($html);
         return $response;
     });
+});
+
+// Dynamic Slug-based Stories and Pages (e.g. /about-us/, /welcome-to-fablepress/)
+// (Defined last to prevent shadowing static routes like /admin/ and /stories/)
+$app->get('/{slug}/', function (Request $request, Response $response, array $args) {
+    $slug = $args['slug'];
+    $_GET['slug'] = $slug; // Inject slug for public-home.php compatibility
+    
+    ob_start();
+    require __DIR__ . '/public-home.php';
+    $html = ob_get_clean();
+    $response->getBody()->write($html);
+    return $response;
 });
 
 // Run the application
