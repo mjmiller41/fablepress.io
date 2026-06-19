@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <div style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem;">
-            <a href="../index.php">&larr; Back to Public Homepage</a>
+            <a href="/">&larr; Back to Public Homepage</a>
         </div>
     </div>
 

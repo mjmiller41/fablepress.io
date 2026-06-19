@@ -34,7 +34,7 @@ if ($slug) {
     <!-- Header & Navigation -->
     <header class="site-header">
         <div class="container header-inner">
-            <a href="index.php" class="logo">
+            <a href="/" class="logo">
                 <div class="logo-icon">F</div>
                 FablePress.io
             </a>
@@ -232,13 +232,13 @@ if ($slug) {
     <footer class="site-footer">
         <div class="container footer-inner">
             <div>
-                <a href="index.php" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
+                <a href="/" style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: #fff;">FablePress.io</a>
                 <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">© 2026 FablePress.io. All rights reserved.</p>
             </div>
             <div style="display: flex; gap: 2rem;">
-                <a href="index.php">Features</a>
-                <a href="index.php">Themes</a>
-                <a href="index.php">Pricing</a>
+                <a href="/">Features</a>
+                <a href="/">Themes</a>
+                <a href="/">Pricing</a>
                 <a href="admin/login.php">Admin Login</a>
             </div>
         </div>

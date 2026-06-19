@@ -138,7 +138,7 @@ try {
                             </td>
                             <td style="text-align: right;">
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <a href="../index.php?slug=<?php echo htmlspecialchars($item['slug']); ?>" target="_blank" class="btn btn-secondary btn-sm" title="View Public Post">
+                                    <a href="/<?php echo htmlspecialchars($item['slug']); ?>/" target="_blank" class="btn btn-secondary btn-sm" title="View Public Post">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     

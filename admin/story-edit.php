@@ -204,7 +204,7 @@ if (isset($_GET['created'])) {
             </button>
             
             <?php if ($id && $post['status'] === 'published'): ?>
-                <a href="../index.php?slug=<?php echo htmlspecialchars($post['slug']); ?>" target="_blank" class="btn btn-secondary">
+                <a href="/<?php echo htmlspecialchars($post['slug']); ?>/" target="_blank" class="btn btn-secondary">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Preview
                 </a>
             <?php endif; ?>

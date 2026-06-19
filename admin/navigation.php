@@ -123,8 +123,8 @@ try {
             
             <div class="form-group">
                 <label for="url">URL Path</label>
-                <input type="text" id="url" name="url" class="form-control" placeholder="e.g. index.php?slug=about-us" value="<?php echo htmlspecialchars($edit_item['url'] ?? ''); ?>" required>
-                <span style="font-size: 0.7rem; color: var(--color-muted);">Use relative paths like <code>index.php?slug=my-page</code> or full URLs like <code>https://google.com</code>.</span>
+                <input type="text" id="url" name="url" class="form-control" placeholder="e.g. /about-us/" value="<?php echo htmlspecialchars($edit_item['url'] ?? ''); ?>" required>
+                <span style="font-size: 0.7rem; color: var(--color-muted);">Use relative clean paths like <code>/my-page/</code> or full URLs like <code>https://google.com</code>.</span>
             </div>
             
             <div class="form-group">
