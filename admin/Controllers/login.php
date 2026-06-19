@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../app/Config/config.php';
 
 // If already logged in, redirect to dashboard
 if (is_logged_in()) {
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FablePress.io Admin</title>
-    <link rel="stylesheet" href="/admin/admin.css">
+    <link rel="stylesheet" href="/admin/assets/admin.css">
     <style>
         .credentials-hint {
             margin-top: 1.5rem;

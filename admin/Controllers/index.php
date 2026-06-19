@@ -1,6 +1,6 @@
 <?php
 $page_active = 'dashboard';
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../Views/header.php';
 
 $db = get_db_connection();
 
@@ -163,5 +163,5 @@ try {
 </div>
 
 <?php
-require_once __DIR__ . '/footer.php';
+require_once __DIR__ . '/../Views/footer.php';
 ?>

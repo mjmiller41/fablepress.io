@@ -1,11 +1,11 @@
 <?php
 $page_active = 'navigation';
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../Views/header.php';
 
 // Authorization Check: Contributor cannot manage navigation
 if ($current_user['role'] === 'contributor' || !has_permission($current_user['role'], 'edit_pages')) {
     echo '<div class="alert alert-danger">Access Denied: You do not have permissions to edit navigation.</div>';
-    require_once __DIR__ . '/footer.php';
+    require_once __DIR__ . '/../Views/footer.php';
     exit;
 }
 
@@ -205,5 +205,5 @@ try {
 </div>
 
 <?php
-require_once __DIR__ . '/footer.php';
+require_once __DIR__ . '/../Views/footer.php';
 ?>

@@ -2,8 +2,8 @@
 // FablePress Configuration File
 
 // Load environment variables from .env file if it exists
-if (file_exists(__DIR__ . '/.env')) {
-    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+if (file_exists(__DIR__ . '/../../.env')) {
+    $lines = file(__DIR__ . '/../../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         $line = trim($line);
         if (strpos($line, '#') === 0 || !strpos($line, '=')) {
@@ -30,7 +30,7 @@ define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 
 // SQLite Configuration
-define('DB_SQLITE_PATH', __DIR__ . '/fablepress.db');
+define('DB_SQLITE_PATH', __DIR__ . '/../Database/fablepress.db');
 
 // Session configuration
 if (session_status() === PHP_SESSION_NONE) {

@@ -1,6 +1,6 @@
 <?php
 $page_active = 'media';
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../Views/header.php';
 
 $db = get_db_connection();
 
@@ -8,7 +8,7 @@ $message = '';
 $message_type = 'success';
 
 // Ensure uploads directory exists
-$upload_dir = __DIR__ . '/../uploads';
+$upload_dir = __DIR__ . '/../../assets/uploads';
 if (!file_exists($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['media_file'])) {
             if (move_uploaded_file($file['tmp_name'], $target_path)) {
                 // Save to database
                 // Relative filepath for public access
-                $relative_path = 'uploads/' . $filename;
+                $relative_path = 'assets/uploads/' . $filename;
                 
                 try {
                     $stmt = $db->prepare("INSERT INTO media (filename, filepath, filetype, filesize, uploaded_by) VALUES (?, ?, ?, ?, ?)");
@@ -85,7 +85,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
             $message_type = 'danger';
         } else {
             // Remove file from disk
-            $disk_path = __DIR__ . '/../' . $media['filepath'];
+            $disk_path = __DIR__ . '/../../' . $media['filepath'];
             if (file_exists($disk_path)) {
                 unlink($disk_path);
             }
@@ -179,7 +179,7 @@ function format_bytes($bytes, $precision = 2) {
                             ?>
                             
                             <?php if ($is_img): ?>
-                                <img src="../<?php echo htmlspecialchars($item['filepath']); ?>" alt="<?php echo htmlspecialchars($item['filename']); ?>">
+                                <img src="/<?php echo htmlspecialchars($item['filepath']); ?>" alt="<?php echo htmlspecialchars($item['filename']); ?>">
                             <?php else: ?>
                                 <i class="fa-solid fa-file file-icon"></i>
                             <?php endif; ?>
@@ -201,7 +201,7 @@ function format_bytes($bytes, $precision = 2) {
                                         class="btn btn-secondary btn-sm" 
                                         style="flex-grow: 1; padding: 0.35rem;" 
                                         title="Copy Image Markdown Link"
-                                        onclick="copyLink('![Image](<?php echo $item['filepath']; ?>)')">
+                                        onclick="copyLink('![Image](/<?php echo $item['filepath']; ?>)')">
                                     <i class="fa-solid fa-link"></i> Markdown
                                 </button>
                                 
@@ -251,5 +251,5 @@ function format_bytes($bytes, $precision = 2) {
 </script>
 
 <?php
-require_once __DIR__ . '/footer.php';
+require_once __DIR__ . '/../Views/footer.php';
 ?>

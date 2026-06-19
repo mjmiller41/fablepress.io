@@ -1,7 +1,7 @@
 <?php
 // FablePress Front Controller & Slim Router
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/app/Config/config.php';
 
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -36,7 +36,7 @@ $app->addErrorMiddleware(true, true, true);
 $app->get('/', function (Request $request, Response $response) {
     $slug = null;
     ob_start();
-    require __DIR__ . '/public-home.php';
+    require __DIR__ . '/public_templates/home.php';
     $html = ob_get_clean();
     $response->getBody()->write($html);
     return $response;
@@ -45,7 +45,7 @@ $app->get('/', function (Request $request, Response $response) {
 // Stories/Blog Catalog List
 $app->get('/stories/', function (Request $request, Response $response) {
     ob_start();
-    require __DIR__ . '/public-stories.php';
+    require __DIR__ . '/public_templates/stories-list.php';
     $html = ob_get_clean();
     $response->getBody()->write($html);
     return $response;
@@ -63,7 +63,7 @@ $app->group('/admin', function ($group) {
     $group->get('/', function (Request $request, Response $response) {
         $page_active = 'dashboard';
         ob_start();
-        require __DIR__ . '/admin/index.php';
+        require __DIR__ . '/admin/Controllers/index.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -72,7 +72,7 @@ $app->group('/admin', function ($group) {
     // Login page
     $group->map(['GET', 'POST'], '/login/', function (Request $request, Response $response) {
         ob_start();
-        require __DIR__ . '/admin/login.php';
+        require __DIR__ . '/admin/Controllers/login.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -81,7 +81,7 @@ $app->group('/admin', function ($group) {
     // Logout page
     $group->get('/logout/', function (Request $request, Response $response) {
         ob_start();
-        require __DIR__ . '/admin/logout.php';
+        require __DIR__ . '/admin/Controllers/logout.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -91,7 +91,7 @@ $app->group('/admin', function ($group) {
     $group->get('/stories/', function (Request $request, Response $response) {
         $page_active = 'stories';
         ob_start();
-        require __DIR__ . '/admin/stories.php';
+        require __DIR__ . '/admin/Controllers/stories.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -102,7 +102,7 @@ $app->group('/admin', function ($group) {
         $page_active = 'stories';
         $_GET['id'] = $args['id']; // Inject route ID parameter for legacy compat
         ob_start();
-        require __DIR__ . '/admin/story-edit.php';
+        require __DIR__ . '/admin/Controllers/story-edit.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -112,7 +112,7 @@ $app->group('/admin', function ($group) {
     $group->map(['GET', 'POST'], '/stories/edit/', function (Request $request, Response $response) {
         $page_active = 'stories';
         ob_start();
-        require __DIR__ . '/admin/story-edit.php';
+        require __DIR__ . '/admin/Controllers/story-edit.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -122,7 +122,7 @@ $app->group('/admin', function ($group) {
     $group->map(['GET', 'POST'], '/media/', function (Request $request, Response $response) {
         $page_active = 'media';
         ob_start();
-        require __DIR__ . '/admin/media.php';
+        require __DIR__ . '/admin/Controllers/media.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -132,7 +132,7 @@ $app->group('/admin', function ($group) {
     $group->map(['GET', 'POST'], '/navigation/', function (Request $request, Response $response) {
         $page_active = 'navigation';
         ob_start();
-        require __DIR__ . '/admin/navigation.php';
+        require __DIR__ . '/admin/Controllers/navigation.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -142,7 +142,7 @@ $app->group('/admin', function ($group) {
     $group->get('/roles/', function (Request $request, Response $response) {
         $page_active = 'roles';
         ob_start();
-        require __DIR__ . '/admin/roles.php';
+        require __DIR__ . '/admin/Controllers/roles.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
@@ -156,7 +156,7 @@ $app->get('/{slug}/', function (Request $request, Response $response, array $arg
     $_GET['slug'] = $slug; // Inject slug for public-home.php compatibility
     
     ob_start();
-    require __DIR__ . '/public-home.php';
+    require __DIR__ . '/public_templates/home.php';
     $html = ob_get_clean();
     $response->getBody()->write($html);
     return $response;

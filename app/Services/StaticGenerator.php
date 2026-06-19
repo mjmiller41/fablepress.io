@@ -1,7 +1,7 @@
 <?php
 // FablePress Static Site Generator
 
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../Config/config.php';
 
 class StaticGenerator {
     
@@ -23,18 +23,18 @@ class StaticGenerator {
             $db = get_db_connection();
             
             // 1. Render Public Homepage -> /index.html
-            $homeHtml = self::renderTemplate(__DIR__ . '/public-home.php');
-            if (file_put_contents(__DIR__ . '/index.html', $homeHtml) === false) {
+            $homeHtml = self::renderTemplate(__DIR__ . '/../../public_templates/home.php');
+            if (file_put_contents(__DIR__ . '/../../index.html', $homeHtml) === false) {
                 throw new Exception("Failed to write static homepage /index.html");
             }
             $results['rendered'][] = 'index.html';
             
             // 2. Render Public Stories list -> /stories/index.html
-            $storiesDir = __DIR__ . '/stories';
+            $storiesDir = __DIR__ . '/../../stories';
             if (!file_exists($storiesDir)) {
                 mkdir($storiesDir, 0755, true);
             }
-            $storiesHtml = self::renderTemplate(__DIR__ . '/public-stories.php');
+            $storiesHtml = self::renderTemplate(__DIR__ . '/../../public_templates/stories-list.php');
             if (file_put_contents($storiesDir . '/index.html', $storiesHtml) === false) {
                 throw new Exception("Failed to write static stories catalog /stories/index.html");
             }
@@ -52,7 +52,7 @@ class StaticGenerator {
                 }
                 
                 $activeSlugs[] = $slug;
-                $postDir = __DIR__ . '/' . $slug;
+                $postDir = __DIR__ . '/../../' . $slug;
                 
                 if (!file_exists($postDir)) {
                     if (!mkdir($postDir, 0755, true)) {
@@ -61,7 +61,7 @@ class StaticGenerator {
                     }
                 }
                 
-                $postHtml = self::renderTemplate(__DIR__ . '/public-home.php', $slug);
+                $postHtml = self::renderTemplate(__DIR__ . '/../../public_templates/home.php', $slug);
                 if (file_put_contents($postDir . '/index.html', $postHtml) === false) {
                     $results['errors'][] = "Failed to write static index for slug: $slug";
                 } else {
@@ -70,14 +70,14 @@ class StaticGenerator {
             }
             
             // 4. Clean up any old static directories that are no longer active published slugs
-            $ignoredDirs = ['admin', 'vendor', 'uploads', 'stories', '.git'];
-            $items = scandir(__DIR__);
+            $ignoredDirs = ['admin', 'vendor', 'assets', 'app', '.git', '.agents', 'stories', 'public_templates'];
+            $items = scandir(__DIR__ . '/../../');
             foreach ($items as $item) {
                 if ($item === '.' || $item === '..') {
                     continue;
                 }
                 
-                $dirPath = __DIR__ . '/' . $item;
+                $dirPath = __DIR__ . '/../../' . $item;
                 if (is_dir($dirPath)) {
                     // Ignore predefined system folders
                     if (in_array($item, $ignoredDirs)) {

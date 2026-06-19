@@ -1,6 +1,6 @@
 <?php
 $page_active = 'roles';
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../Views/header.php';
 
 // Authorization: Only Developers can modify permissions
 $db = get_db_connection();
@@ -257,5 +257,5 @@ function is_checked($perms, $role, $key, $default) {
 </div>
 
 <?php
-require_once __DIR__ . '/footer.php';
+require_once __DIR__ . '/../Views/footer.php';
 ?>

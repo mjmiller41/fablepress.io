@@ -1,10 +1,10 @@
 <?php
 // Load configuration and core function definitions
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/app/Config/config.php';
 
 // Security Checks
 // 1. Check if fablepress.db exists in the root directory
-$db_file = __DIR__ . '/fablepress.db';
+$db_file = __DIR__ . '/app/Database/fablepress.db';
 $db_exists = file_exists($db_file);
 
 // 2. Check if the configuration is set to MySQL mode
@@ -19,7 +19,7 @@ function render_header($title) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo htmlspecialchars($title); ?> - FablePress.io</title>
-        <link rel="stylesheet" href="/admin/admin.css">
+        <link rel="stylesheet" href="/admin/assets/admin.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             :root {
