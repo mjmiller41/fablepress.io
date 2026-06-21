@@ -1,0 +1,319 @@
+/* FablePress Zen Composer Theme - Styling Overrides */
+
+/* Editor container customization */
+.zen-composer-defaultUI {
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
+    background-color: var(--color-white);
+    font-family: var(--font-sans) !important;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Toolbar styling */
+.zen-composer-defaultUI-toolbar {
+    background-color: var(--color-card) !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    padding: 8px 16px !important;
+}
+
+/* Toolbar button adjustments */
+.zen-composer-defaultUI-toolbar button {
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    background-color: transparent !important;
+    color: var(--color-ink) !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.zen-composer-defaultUI-toolbar button:hover {
+    background-color: var(--color-border) !important;
+    color: var(--color-gold) !important;
+}
+
+/* Active buttons and state */
+.zen-composer-defaultUI-toolbar button.active {
+    background-color: var(--color-border) !important;
+    color: var(--color-gold) !important;
+}
+
+/* Editor tabs/modes (Write / Preview tabs in Markdown mode) */
+.zen-composer-tabs {
+    background-color: var(--color-card) !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    border-top: none !important;
+    display: flex !important;
+    height: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.zen-composer-tabs .tab-item {
+    font-family: var(--font-sans) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--color-muted) !important;
+    border: none !important;
+    border-right: 1px solid var(--color-border) !important;
+    background-color: transparent !important;
+    padding: 0 20px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: color 0.2s, background-color 0.2s !important;
+    line-height: 40px !important;
+}
+
+.zen-composer-tabs .tab-item.active {
+    background-color: var(--color-paper) !important; /* Blend with FablePress cream paper background */
+    color: var(--color-gold) !important;
+    font-weight: 700 !important;
+    border-bottom: 3px solid var(--color-gold) !important;
+}
+
+.zen-composer-tabs .tab-item:hover:not(.active) {
+    background-color: var(--color-border) !important;
+    color: var(--color-ink) !important;
+}
+
+/* Content writing pane */
+.zen-composer-main {
+    background-color: var(--color-paper) !important;
+}
+
+/* Content typography overrides */
+.zen-composer-contents,
+.zen-composer-contents p,
+.zen-composer-contents div,
+.zen-composer-contents span,
+.ProseMirror {
+    font-family: var(--font-serif) !important;
+    font-size: 1.15rem !important;
+    line-height: 1.75 !important;
+    color: var(--color-ink) !important;
+    background-color: var(--color-paper) !important;
+}
+
+/* Caret/Cursor color */
+.ProseMirror {
+    caret-color: var(--color-gold) !important;
+    padding: 24px 32px !important;
+}
+
+/* Headings in editor and preview */
+.zen-composer-contents h1, .ProseMirror h1 {
+    font-family: var(--font-serif) !important;
+    font-size: 2.25rem !important;
+    font-weight: 700 !important;
+    color: var(--color-ink) !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.zen-composer-contents h2, .ProseMirror h2 {
+    font-family: var(--font-serif) !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: var(--color-ink) !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.zen-composer-contents h3, .ProseMirror h3 {
+    font-family: var(--font-serif) !important;
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    color: var(--color-ink) !important;
+    margin-top: 1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Selection highlight */
+.ProseMirror ::selection,
+.zen-composer-contents ::selection {
+    background-color: rgba(201, 155, 59, 0.15) !important; /* Gold semi-transparent */
+}
+
+/* Code block customization */
+.zen-composer-contents pre,
+.ProseMirror pre {
+    background-color: var(--color-card) !important;
+    border-left: 4px solid var(--color-gold) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 16px !important;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+    font-size: 0.95rem !important;
+}
+
+/* Code inline styling */
+.zen-composer-contents code,
+.ProseMirror code {
+    background-color: var(--color-card) !important;
+    color: #c93b7b !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: Consolas, Monaco, monospace !important;
+    font-size: 0.9rem !important;
+}
+
+/* Markdown source mode editor (CodeMirror panel) */
+.zen-composer-md-container {
+    background-color: var(--color-paper) !important;
+}
+
+.zen-composer-md-container .CodeMirror {
+    font-family: Consolas, Monaco, monospace !important;
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    background-color: var(--color-paper) !important;
+    color: var(--color-ink) !important;
+    padding: 24px 32px !important;
+}
+
+/* CodeMirror markdown syntax highlighting color adjustments for light background */
+.zen-composer-md-container .CodeMirror .cm-header {
+    color: var(--color-ink) !important;
+    font-weight: bold !important;
+}
+.zen-composer-md-container .CodeMirror .cm-strong {
+    color: var(--color-ink) !important;
+    font-weight: bold !important;
+}
+.zen-composer-md-container .CodeMirror .cm-em {
+    color: var(--color-ink) !important;
+    font-style: italic !important;
+}
+.zen-composer-md-container .CodeMirror .cm-link {
+    color: var(--color-forest) !important;
+    text-decoration: underline !important;
+}
+.zen-composer-md-container .CodeMirror .cm-string {
+    color: var(--color-forest) !important;
+}
+.zen-composer-md-container .CodeMirror .cm-keyword {
+    color: var(--color-gold) !important;
+}
+.zen-composer-md-container .CodeMirror .cm-comment {
+    color: var(--color-muted) !important;
+}
+
+/* Markdown preview panel styling */
+.zen-composer-md-splitter {
+    background-color: var(--color-border) !important;
+    width: 2px !important;
+}
+
+.zen-composer-md-preview {
+    background-color: var(--color-paper) !important;
+    padding: 24px 32px !important;
+    border-left: 1px solid var(--color-border) !important;
+}
+
+/* Popups & Dialogs customization (image upload etc) */
+.zen-composer-popup {
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-md) !important;
+    background-color: var(--color-white) !important;
+    font-family: var(--font-sans) !important;
+}
+
+.zen-composer-popup-header {
+    background-color: var(--color-card) !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    color: var(--color-ink) !important;
+    font-weight: 600 !important;
+}
+
+/* Popup buttons styling */
+.zen-composer-popup button {
+    border-radius: var(--radius-sm) !important;
+    font-family: var(--font-sans) !important;
+}
+
+.zen-composer-popup button.zen-composer-ok-button {
+    background-color: var(--color-forest) !important;
+    color: var(--color-white) !important;
+    border: none !important;
+}
+
+.zen-composer-popup button.zen-composer-close-button {
+    background-color: var(--color-border) !important;
+    color: var(--color-muted) !important;
+    border: none !important;
+}
+
+/* Input fields in popup dialogs */
+.zen-composer-popup input {
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 6px 12px !important;
+    outline: none !important;
+    transition: border-color 0.2s !important;
+}
+
+.zen-composer-popup input:focus {
+    border-color: var(--color-gold) !important;
+}
+
+/* Tooltip adjustments */
+.zen-composer-tooltip {
+    font-family: var(--font-sans) !important;
+    font-size: 0.75rem !important;
+    background-color: var(--color-ink) !important;
+    border-radius: 4px !important;
+}
+
+/* Style the bottom mode switch panel to match the top tabs */
+.zen-composer-mode-switch {
+    background-color: var(--color-card) !important;
+    border-top: 1px solid var(--color-border) !important;
+    border-bottom: none !important;
+    display: flex !important;
+    justify-content: flex-start !important; /* Align tabs to the left */
+    padding: 0 !important;
+    height: 40px !important;
+}
+
+.zen-composer-mode-switch .tab-item {
+    border: none !important;
+    border-right: 1px solid var(--color-border) !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    color: var(--color-muted) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    padding: 0 20px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    transition: color 0.2s, background-color 0.2s !important;
+    box-shadow: none !important;
+    line-height: 40px !important;
+    outline: none !important;
+    margin: 0 !important;
+}
+
+.zen-composer-mode-switch .tab-item.active {
+    background-color: var(--color-paper) !important; /* Blend with FablePress cream paper background */
+    color: var(--color-gold) !important;
+    font-weight: 700 !important;
+    border-top: 3px solid var(--color-gold) !important; /* Active accent indicator at the top of bottom tabs */
+}
+
+.zen-composer-mode-switch .tab-item:hover:not(.active) {
+    background-color: var(--color-border) !important;
+    color: var(--color-ink) !important;
+}
+.zen-composer-ww-container .zen-composer-contents {
+    padding: 0 !important;
+}
+.zen-composer-defaultUI-toolbar {
+    height: auto !important;
+}

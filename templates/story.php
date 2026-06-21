@@ -13,8 +13,8 @@ if ($slug) {
 
 $page_title = $post ? $post['title'] : 'Page Not Found';
 
-require_once __DIR__ . '/../includes/head.php';
-require_once __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/head.php';
+require __DIR__ . '/../includes/header.php';
 ?>
 
     <!-- Main Content -->
@@ -51,4 +51,4 @@ require_once __DIR__ . '/../includes/header.php';
         <?php endif; ?>
     </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

@@ -14,5 +14,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Fig\\Http\\Message\\' => array($vendorDir . '/fig/http-message-util/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
+    'FablePress\\ZenImages\\' => array($vendorDir . '/fablepress/zen-images/src'),
+    'FablePress\\ZenComposer\\' => array($vendorDir . '/fablepress/zen-composer/src'),
     'App\\' => array($baseDir . '/src'),
 );

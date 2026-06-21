@@ -25,7 +25,7 @@ if (!isset($page_active)) {
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/vendor/font-awesome/css/all.min.css">
 </head>
 <body>
 
@@ -58,9 +58,11 @@ if (!isset($page_active)) {
                 <i class="fa-solid fa-user-shield"></i> Roles & Permissions
             </a>
             
-            <a href="/admin/users/" class="<?php echo $page_active === 'users' ? 'active' : ''; ?>">
-                <i class="fa-solid fa-users"></i> User Accounts
-            </a>
+            <?php if ($current_user['role'] === 'developer'): ?>
+                <a href="/admin/users/" class="<?php echo $page_active === 'users' ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-users"></i> User Accounts
+                </a>
+            <?php endif; ?>
         </nav>
         
         <div class="sidebar-footer">

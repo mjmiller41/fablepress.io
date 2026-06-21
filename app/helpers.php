@@ -240,29 +240,106 @@ function get_role_label($role) {
 }
 
 function parse_markdown($text) {
-    // Escape HTML entities but preserve existing tags if any, or escape everything for security
+    if (class_exists('Parsedown')) {
+        $parsedown = new \Parsedown();
+        $html = $parsedown->text($text);
+
+        // Post-process HTML to handle image resizing via url hashes/queries (#widthxheight or #width)
+        $html = preg_replace_callback('/<img\s+[^>]*src="([^"]+)"[^>]*>/i', function($matches) {
+            $img_tag = $matches[0];
+            $src = $matches[1];
+            
+            $width = '';
+            $height = '';
+            
+            $url_parts = parse_url(html_entity_decode($src, ENT_QUOTES, 'UTF-8'));
+            $query_str = '';
+            if (isset($url_parts['fragment'])) {
+                $query_str = $url_parts['fragment'];
+            } elseif (isset($url_parts['query'])) {
+                $query_str = $url_parts['query'];
+            }
+            
+            if ($query_str !== '') {
+                $params = [];
+                parse_str($query_str, $params);
+                
+                $w = isset($params['width']) ? $params['width'] : (isset($params['w']) ? $params['w'] : '');
+                $h = isset($params['height']) ? $params['height'] : (isset($params['h']) ? $params['h'] : '');
+                
+                if ($w !== '') {
+                    $width = preg_replace('/[^0-9%px]/', '', $w);
+                }
+                if ($h !== '') {
+                    $height = preg_replace('/[^0-9%px]/', '', $h);
+                }
+                
+                // Also support simple #300x200 or #300 or #x200
+                if ($width === '') {
+                    if (preg_match('/^(\d+)x(\d+)$/', $query_str, $size_matches)) {
+                        $width = $size_matches[1];
+                        $height = $size_matches[2];
+                    } elseif (preg_match('/^x(\d+)$/', $query_str, $size_matches)) {
+                        $height = $size_matches[1];
+                    } elseif (preg_match('/^(\d+)$/', $query_str, $size_matches)) {
+                        $width = $size_matches[1];
+                    }
+                }
+            }
+            
+            if ($width !== '' || $height !== '') {
+                // Remove existing width/height/style attributes
+                $img_tag = preg_replace('/\s+(width|height|style)="[^"]*"/i', '', $img_tag);
+                
+                $insert = '';
+                if ($width !== '') {
+                    if (is_numeric($width)) {
+                        $width .= 'px';
+                    }
+                    $insert .= ' width="' . $width . '"';
+                }
+                if ($height !== '') {
+                    if (is_numeric($height)) {
+                        $height .= 'px';
+                    }
+                    $insert .= ' height="' . $height . '"';
+                }
+                
+                // Inject style attribute for responsive sizing
+                if ($width !== '' && $height !== '') {
+                    $insert .= ' style="width: ' . $width . '; max-width: 100%; height: ' . $height . ';"';
+                } elseif ($width !== '') {
+                    $insert .= ' style="width: ' . $width . '; max-width: 100%; height: auto;"';
+                } elseif ($height !== '') {
+                    $insert .= ' style="width: auto; max-width: 100%; height: ' . $height . ';"';
+                }
+                
+                $img_tag = preg_replace('/<img/i', '<img' . $insert, $img_tag);
+            }
+            
+            return $img_tag;
+        }, $html);
+
+        return $html;
+    }
+
+    // Fallback to basic regex-based parser if Parsedown is not available
     $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     
-    // Unescape common safe markdown replacements (like strong, em, h1-h3) so they render
-    // Bold: **text** -> <strong>text</strong>
-    $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+    $text = preg_replace('/\\*\\*(.*?)\\*\\*/', '<strong>$1</strong>', $text);
+    $text = preg_replace('/\\*(.*?)\\*/', '<em>$1</em>', $text);
     
-    // Italic: *text* -> <em>text</em>
-    $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+    $text = preg_replace('/^###\\s+(.*?)$/m', '<h3>$1</h3>', $text);
+    $text = preg_replace('/^##\\s+(.*?)$/m', '<h2>$1</h2>', $text);
+    $text = preg_replace('/^#\\s+(.*?)$/m', '<h1>$1</h1>', $text);
     
-    // Headings
-    $text = preg_replace('/^###\s+(.*?)$/m', '<h3>$1</h3>', $text);
-    $text = preg_replace('/^##\s+(.*?)$/m', '<h2>$1</h2>', $text);
-    $text = preg_replace('/^#\s+(.*?)$/m', '<h1>$1</h1>', $text);
-    
-    // Lists
     $lines = explode("\n", $text);
     $in_list = false;
     $html_lines = [];
     
     foreach ($lines as $line) {
         $line = trim($line);
-        if (preg_match('/^-\s+(.*?)$/', $line, $matches)) {
+        if (preg_match('/^- \\s+(.*?)$/', $line, $matches)) {
             if (!$in_list) {
                 $html_lines[] = '<ul>';
                 $in_list = true;
@@ -286,7 +363,6 @@ function parse_markdown($text) {
         $html_lines[] = '</ul>';
     }
     
-    // Decode some simple character codes that are safe, e.g. &lt;strong&gt; back to html
     $text = implode("\n", $html_lines);
     $text = str_replace(
         ['&lt;strong&gt;', '&lt;/strong&gt;', '&lt;em&gt;', '&lt;/em&gt;', '&lt;h1&gt;', '&lt;/h1&gt;', '&lt;h2&gt;', '&lt;/h2&gt;', '&lt;h3&gt;', '&lt;/h3&gt;', '&lt;ul&gt;', '&lt;/ul&gt;', '&lt;li&gt;', '&lt;/li&gt;'],
@@ -305,4 +381,12 @@ function format_bytes($bytes, $precision = 2) {
     $bytes /= pow(1024, $pow);
     return round($bytes, $precision) . ' ' . $units[$pow];
 }
+
+function is_checked($perms, $role, $key, $default = 0) {
+    if (isset($perms[$role][$key])) {
+        return $perms[$role][$key] === 1 ? 'checked' : '';
+    }
+    return $default === 1 ? 'checked' : '';
+}
+
 

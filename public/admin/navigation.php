@@ -92,6 +92,12 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         </div>
                         
                         <div style="display: flex; gap: 0.25rem;">
+                            <a href="/admin/navigation/?action=move_up&id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Move Up">
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </a>
+                            <a href="/admin/navigation/?action=move_down&id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Move Down">
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </a>
                             <a href="/admin/navigation/?edit_id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm" title="Edit link settings">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>

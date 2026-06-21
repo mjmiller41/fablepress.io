@@ -150,6 +150,7 @@ main.admin-main {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  min-width: 0; /* Prevents flex layout overflow */
 }
 
 header.admin-header {
@@ -235,6 +236,7 @@ header.admin-header .header-actions a.public-site-link {
   box-shadow: var(--shadow-sm);
   padding: 2rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0; /* Prevents grid layout overflow */
 }
 
 .admin-card:hover {
@@ -270,6 +272,13 @@ header.admin-header .header-actions a.public-site-link {
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-box .stat-num {
@@ -305,7 +314,7 @@ table.admin-table {
 }
 
 table.admin-table th, table.admin-table td {
-  padding: 1rem 1.5rem;
+  padding: 1rem 1rem;
   border-bottom: 1px solid var(--color-border);
 }
 

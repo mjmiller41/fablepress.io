@@ -1,7 +1,7 @@
 <?php
 $page_title = 'Your stories deserve a beautiful home';
-require_once __DIR__ . '/../includes/head.php';
-require_once __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/head.php';
+require __DIR__ . '/../includes/header.php';
 ?>
 
     <!-- Main Content -->
@@ -71,7 +71,7 @@ require_once __DIR__ . '/../includes/header.php';
                         else:
                             foreach ($stories as $story):
                                 // Simple excerpt builder
-                                $excerpt = strip_tags($story['content']);
+                                $excerpt = strip_tags(parse_markdown($story['content']));
                                 if (strlen($excerpt) > 180) {
                                     $excerpt = substr($excerpt, 0, 175) . '...';
                                 }
@@ -128,4 +128,4 @@ require_once __DIR__ . '/../includes/header.php';
         </section>
     </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

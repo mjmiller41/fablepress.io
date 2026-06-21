@@ -4,8 +4,135 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ec74a44dee2bdff73c9780840fbb095",
+    "content-hash": "99e01cb34983f5f97fba8c776b8e34b2",
     "packages": [
+        {
+            "name": "erusev/parsedown",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "96baaad00f71ba04d76e45b4620f54d3beabd6f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/96baaad00f71ba04d76e45b4620f54d3beabd6f7",
+                "reference": "96baaad00f71ba04d76e45b4620f54d3beabd6f7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5|^8.5|^9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/erusev/parsedown/issues",
+                "source": "https://github.com/erusev/parsedown/tree/1.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/erusev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-16T11:41:01+00:00"
+        },
+        {
+            "name": "fablepress/zen-composer",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../ZenComposer",
+                "reference": "613c17dd8d2299843aad87a3cbb9198977d8f7a0"
+            },
+            "require": {
+                "fablepress/zenmark": "@dev",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FablePress\\ZenComposer\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "ZenComposer: GFM Markdown WYSIWYG Editor",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "fablepress/zen-images",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../ZenImages",
+                "reference": "9ee993e21135a0bdb69d1400b19d89d7e78f7378"
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FablePress\\ZenImages\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "ZenImages: Custom HTML5 Canvas Image Editor",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "fablepress/zenmark",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../ZenComposer/libs/zenmark",
+                "reference": "31875f07ca4fbd6d97320d31cfe90bb2bc561790"
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "type": "library",
+            "license": [
+                "MIT"
+            ],
+            "description": "ZenMark: Markdown parser extended from CommonMark.js",
+            "transport-options": {
+                "relative": true
+            }
+        },
         {
             "name": "fig/http-message-util",
             "version": "1.1.5",
@@ -678,9 +805,12 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "fablepress/zen-composer": 20,
+        "fablepress/zen-images": 20
+    },
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],

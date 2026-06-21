@@ -29,6 +29,8 @@ class ComposerStaticInite76b0dba920fa56f9d890196703e6a81
         array (
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
+            'FablePress\\ZenImages\\' => 21,
+            'FablePress\\ZenComposer\\' => 23,
         ),
         'A' => 
         array (
@@ -71,9 +73,27 @@ class ComposerStaticInite76b0dba920fa56f9d890196703e6a81
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
+        'FablePress\\ZenImages\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fablepress/zen-images/src',
+        ),
+        'FablePress\\ZenComposer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fablepress/zen-composer/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'Parsedown' => 
+            array (
+                0 => __DIR__ . '/..' . '/erusev/parsedown',
+            ),
         ),
     );
 
@@ -86,6 +106,7 @@ class ComposerStaticInite76b0dba920fa56f9d890196703e6a81
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInite76b0dba920fa56f9d890196703e6a81::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInite76b0dba920fa56f9d890196703e6a81::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInite76b0dba920fa56f9d890196703e6a81::$prefixesPsr0;
             $loader->classMap = ComposerStaticInite76b0dba920fa56f9d890196703e6a81::$classMap;
 
         }, null, ClassLoader::class);

@@ -39,7 +39,7 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                     <th>Author</th>
                     <th>Date</th>
                     <th>Status</th>
-                    <th style="text-align: right; width: 15%;">Actions</th>
+                    <th style="text-align: right; width: 180px; white-space: nowrap;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,7 +81,7 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                             </td>
                             <td style="text-align: right;">
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <a href="/<?php echo htmlspecialchars($item['slug']); ?>/" target="_blank" class="btn btn-secondary btn-sm" title="View Public Post">
+                                    <a href="/<?php echo $item['type'] === 'story' ? 'stories/' : ''; ?><?php echo htmlspecialchars($item['slug']); ?>/" target="_blank" class="btn btn-secondary btn-sm" title="View Public Post">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     
@@ -92,6 +92,22 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                                         $can_edit = false;
                                     }
                                     ?>
+
+                                    <?php if ($can_edit): ?>
+                                        <?php if ($item['status'] === 'published'): ?>
+                                            <a href="/admin/stories/?action=toggle_status&id=<?php echo $item['id']; ?>&type=<?php echo $filter_type; ?>" class="btn btn-secondary btn-sm" title="Unpublish (Revert to Draft)">
+                                                <i class="fa-solid fa-eye-slash"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="/admin/stories/?action=toggle_status&id=<?php echo $item['id']; ?>&type=<?php echo $filter_type; ?>" class="btn btn-secondary btn-sm" title="Publish Post">
+                                                <i class="fa-solid fa-globe"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm" disabled style="opacity: 0.4; cursor: not-allowed;" title="Cannot Publish Others' Posts">
+                                            <i class="fa-solid fa-globe"></i>
+                                        </button>
+                                    <?php endif; ?>
                                     
                                     <?php if ($can_edit): ?>
                                         <a href="/admin/stories/edit/<?php echo $item['id']; ?>/" class="btn btn-secondary btn-sm" title="Edit">

@@ -1,8 +1,27 @@
 {
     "require": {
         "slim/slim": "^4.15",
-        "slim/psr7": "^1.8"
+        "slim/psr7": "^1.8",
+        "fablepress/zen-composer": "@dev",
+        "fablepress/zen-images": "@dev",
+        "erusev/parsedown": "^1.8"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ZenComposer"
+        },
+        {
+            "type": "path",
+            "url": "../ZenComposer/libs/zenmark"
+        },
+        {
+            "type": "path",
+            "url": "../ZenImages"
+        }
+    ],
     "autoload": {
         "files": [
             "app/helpers.php"
@@ -10,5 +29,19 @@
         "psr-4": {
             "App\\": "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenComposer\\\\ZenComposer::publishAssets('public/assets/vendor/fablepress-editor');\"",
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenImages\\\\ZenImages::publishAssets('public/assets/vendor/fablepress-images');\""
+        ],
+        "post-update-cmd": [
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenComposer\\\\ZenComposer::publishAssets('public/assets/vendor/fablepress-editor');\"",
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenImages\\\\ZenImages::publishAssets('public/assets/vendor/fablepress-images');\""
+        ],
+        "publish-assets": [
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenComposer\\\\ZenComposer::publishAssets('public/assets/vendor/fablepress-editor');\"",
+            "php -r \"require 'vendor/autoload.php'; \\\\FablePress\\\\ZenImages\\\\ZenImages::publishAssets('public/assets/vendor/fablepress-images');\""
+        ]
     }
 }

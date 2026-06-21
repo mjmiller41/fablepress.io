@@ -43,8 +43,8 @@ class AdminController {
         // Fetch counts
         try {
             $total_stories = $db->query("SELECT COUNT(*) FROM posts WHERE type = 'story'")->fetchColumn();
-            $published_stories = $db->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn();
-            $draft_stories = $db->query("SELECT COUNT(*) FROM posts WHERE status = 'draft'")->fetchColumn();
+            $published_stories = $db->query("SELECT COUNT(*) FROM posts WHERE type = 'story' AND status = 'published'")->fetchColumn();
+            $draft_stories = $db->query("SELECT COUNT(*) FROM posts WHERE type = 'story' AND status = 'draft'")->fetchColumn();
             $total_users = $db->query("SELECT COUNT(*) FROM users")->fetchColumn();
         } catch (Exception $e) {
             $total_stories = $published_stories = $draft_stories = $total_users = 0;
@@ -160,6 +160,40 @@ class AdminController {
                     $del_stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
                     $del_stmt->execute([$delete_id]);
                     $message = 'Post deleted successfully.';
+                    
+                    // Regenerate static site
+                    StaticGenerator::generateAll();
+                }
+            } else {
+                $message = 'Error: Story or Page not found.';
+                $message_type = 'danger';
+            }
+        }
+
+        // Handle publish/unpublish toggle
+        if (isset($queryParams['action']) && $queryParams['action'] === 'toggle_status' && isset($queryParams['id'])) {
+            $post_id = (int)$queryParams['id'];
+            
+            // First, fetch the post to check ownership/permissions
+            $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
+            $stmt->execute([$post_id]);
+            $post = $stmt->fetch();
+            
+            if ($post) {
+                $can_edit = true;
+                if ($current_user['role'] === 'contributor' && $post['author_id'] != $current_user['id']) {
+                    $can_edit = false;
+                }
+                
+                if (!$can_edit) {
+                    $message = 'Unauthorized: You are not permitted to edit this post.';
+                    $message_type = 'danger';
+                } else {
+                    $new_status = $post['status'] === 'published' ? 'draft' : 'published';
+                    $update_stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+                    $update_stmt->execute([$new_status, $post_id]);
+                    
+                    $message = 'Post status updated to ' . $new_status . '.';
                     
                     // Regenerate static site
                     StaticGenerator::generateAll();
@@ -444,6 +478,82 @@ class AdminController {
     }
 
     /**
+     * AJAX Media upload handler
+     */
+    public function uploadAjax(Request $request, Response $response): Response {
+        if (!is_logged_in()) {
+            $response->getBody()->write(json_encode(['success' => false, 'error' => 'Not authenticated']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
+        $current_user = get_logged_in_user();
+        if (!$current_user) {
+            $response->getBody()->write(json_encode(['success' => false, 'error' => 'Invalid session']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
+
+        $db = get_db_connection();
+        $upload_dir = __DIR__ . '/../../../public/assets/uploads';
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
+        $uploadedFiles = $request->getUploadedFiles();
+        if (isset($uploadedFiles['media_file'])) {
+            $uploadedFile = $uploadedFiles['media_file'];
+            if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+                $filename = $uploadedFile->getClientFilename();
+                $filename = preg_replace('/[^a-zA-Z0-9\._-]/', '', $filename);
+                $filetype = $uploadedFile->getClientMediaType();
+                $filesize = $uploadedFile->getSize();
+
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+
+                if (!in_array($filetype, $allowed_types)) {
+                    $response->getBody()->write(json_encode(['success' => false, 'error' => 'Only images (JPG, PNG, GIF, WEBP, SVG) are allowed.']));
+                    return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+                }
+                
+                if ($filesize > 5 * 1024 * 1024) {
+                    $response->getBody()->write(json_encode(['success' => false, 'error' => 'File size exceeds the 5MB limit.']));
+                    return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+                }
+
+                $target_path = $upload_dir . '/' . $filename;
+                $path_info = pathinfo($filename);
+                $counter = 1;
+                
+                while (file_exists($target_path)) {
+                    $filename = $path_info['filename'] . '_' . $counter . '.' . $path_info['extension'];
+                    $target_path = $upload_dir . '/' . $filename;
+                    $counter++;
+                }
+                
+                try {
+                    $uploadedFile->moveTo($target_path);
+                    $relative_path = 'assets/uploads/' . $filename;
+
+                    $stmt = $db->prepare("INSERT INTO media (filename, filepath, filetype, filesize, uploaded_by) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$filename, $relative_path, $filetype, $filesize, $current_user['id']]);
+                    
+                    $url = '/' . $relative_path;
+                    
+                    $response->getBody()->write(json_encode(['success' => true, 'url' => $url]));
+                    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+                } catch (Exception $e) {
+                    $response->getBody()->write(json_encode(['success' => false, 'error' => 'Error uploading file: ' . $e->getMessage()]));
+                    return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+                }
+            } else {
+                $response->getBody()->write(json_encode(['success' => false, 'error' => 'File upload error code ' . $uploadedFile->getError()]));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+            }
+        }
+
+        $response->getBody()->write(json_encode(['success' => false, 'error' => 'No file uploaded']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
+
+    /**
      * Navigation menu editor
      */
     public function navigation(Request $request, Response $response): Response {
@@ -503,6 +613,51 @@ class AdminController {
                 } catch (Exception $e) {
                     $message = 'Database error: ' . $e->getMessage();
                     $message_type = 'danger';
+                }
+            }
+        }
+
+        // Handle Move Up / Move Down
+        if (isset($queryParams['action']) && in_array($queryParams['action'], ['move_up', 'move_down']) && isset($queryParams['id'])) {
+            $id = (int)$queryParams['id'];
+            $dir = $queryParams['action'];
+            
+            // Get current item position
+            $stmt = $db->prepare("SELECT * FROM navigation WHERE id = ?");
+            $stmt->execute([$id]);
+            $current_item = $stmt->fetch();
+            
+            if ($current_item) {
+                $current_pos = (int)$current_item['position'];
+                
+                if ($dir === 'move_up') {
+                    // Find highest position smaller than current
+                    $stmt = $db->prepare("SELECT * FROM navigation WHERE position < ? ORDER BY position DESC LIMIT 1");
+                    $stmt->execute([$current_pos]);
+                } else {
+                    // Find lowest position larger than current
+                    $stmt = $db->prepare("SELECT * FROM navigation WHERE position > ? ORDER BY position ASC LIMIT 1");
+                    $stmt->execute([$current_pos]);
+                }
+                
+                $neighbor = $stmt->fetch();
+                if ($neighbor) {
+                    $neighbor_pos = (int)$neighbor['position'];
+                    
+                    // If positions are identical, increment one to avoid conflict
+                    if ($neighbor_pos === $current_pos) {
+                        $neighbor_pos = ($dir === 'move_up') ? $current_pos - 1 : $current_pos + 1;
+                    }
+                    
+                    // Swap positions
+                    $upd1 = $db->prepare("UPDATE navigation SET position = ? WHERE id = ?");
+                    $upd1->execute([$neighbor_pos, $current_item['id']]);
+                    
+                    $upd2 = $db->prepare("UPDATE navigation SET position = ? WHERE id = ?");
+                    $upd2->execute([$current_pos, $neighbor['id']]);
+                    
+                    StaticGenerator::generateAll();
+                    return $response->withHeader('Location', '/admin/navigation/')->withStatus(302);
                 }
             }
         }
@@ -614,6 +769,133 @@ class AdminController {
             'message_type' => $message_type,
             'current_user' => $current_user,
             'page_active' => 'roles'
+        ]);
+    }
+
+    /**
+     * User Accounts Manager
+     */
+    public function users(Request $request, Response $response): Response {
+        if (!is_logged_in()) {
+            return $response->withHeader('Location', '/admin/login/')->withStatus(302);
+        }
+        $current_user = get_logged_in_user();
+        if (!$current_user) {
+            return $response->withHeader('Location', '/admin/logout/')->withStatus(302);
+        }
+
+        // Authorization check: Only Developers can manage users
+        if ($current_user['role'] !== 'developer') {
+            $response->getBody()->write('<div class="alert alert-danger" style="margin: 2rem; font-family: var(--font-sans); font-size: 0.9rem;">Access Denied: Only Developers can manage user accounts.</div>');
+            return $response->withStatus(403);
+        }
+
+        $db = get_db_connection();
+        $message = '';
+        $message_type = 'success';
+        $edit_user = null;
+
+        $queryParams = $request->getQueryParams();
+        $edit_id = isset($queryParams['edit_id']) ? (int)$queryParams['edit_id'] : null;
+
+        if ($edit_id) {
+            $stmt = $db->prepare("SELECT id, username, email, role FROM users WHERE id = ?");
+            $stmt->execute([$edit_id]);
+            $edit_user = $stmt->fetch();
+        }
+
+        // Handle POST Requests (Add, Edit, or Delete User)
+        if ($request->getMethod() === 'POST') {
+            $params = $request->getParsedBody() ?? $_POST;
+            $action = trim($params['action'] ?? 'save');
+            
+            if ($action === 'delete') {
+                $delete_id = (int)($params['id'] ?? 0);
+                if ($delete_id === (int)$current_user['id']) {
+                    $message = 'Error: You cannot delete your own account.';
+                    $message_type = 'danger';
+                } else {
+                    try {
+                        $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
+                        $stmt->execute([$delete_id]);
+                        $message = 'User deleted successfully.';
+                    } catch (Exception $e) {
+                        $message = 'Database error: ' . $e->getMessage();
+                        $message_type = 'danger';
+                    }
+                }
+            } else {
+                $username = trim($params['username'] ?? '');
+                $email = trim($params['email'] ?? '');
+                $role = trim($params['role'] ?? 'contributor');
+                $password = trim($params['password'] ?? '');
+                $form_id = isset($params['form_id']) ? (int)$params['form_id'] : null;
+
+                if ($username === '' || $email === '') {
+                    $message = 'Error: Username and Email are required.';
+                    $message_type = 'danger';
+                } else {
+                    try {
+                        if ($form_id) {
+                            // Edit User
+                            if ($password !== '') {
+                                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                                $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, role = ?, password = ? WHERE id = ?");
+                                $stmt->execute([$username, $email, $role, $hashed_password, $form_id]);
+                            } else {
+                                $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?");
+                                $stmt->execute([$username, $email, $role, $form_id]);
+                            }
+                            return $response->withHeader('Location', '/admin/users/?success=updated')->withStatus(302);
+                        } else {
+                            // Add User
+                            if ($password === '') {
+                                $message = 'Error: Password is required for new users.';
+                                $message_type = 'danger';
+                            } else {
+                                // Check unique username
+                                $chk = $db->prepare("SELECT id FROM users WHERE username = ?");
+                                $chk->execute([$username]);
+                                if ($chk->fetch()) {
+                                    $message = 'Error: Username already in use.';
+                                    $message_type = 'danger';
+                                } else {
+                                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                                    $stmt = $db->prepare("INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)");
+                                    $stmt->execute([$username, $hashed_password, $email, $role]);
+                                    $message = 'User account created successfully.';
+                                }
+                            }
+                        }
+                    } catch (Exception $e) {
+                        $message = 'Database error: ' . $e->getMessage();
+                        $message_type = 'danger';
+                    }
+                }
+            }
+        }
+
+        if (isset($queryParams['success']) && $queryParams['success'] === 'updated') {
+            $message = 'User account updated successfully.';
+        }
+
+        // Fetch all users
+        try {
+            $stmt = $db->query("SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC");
+            $users_list = $stmt->fetchAll();
+        } catch (Exception $e) {
+            $users_list = [];
+            $message = 'Database error: ' . $e->getMessage();
+            $message_type = 'danger';
+        }
+
+        return $this->render($response, 'users.php', [
+            'edit_user' => $edit_user,
+            'message' => $message,
+            'message_type' => $message_type,
+            'users_list' => $users_list,
+            'current_user' => $current_user,
+            'page_active' => 'users'
         ]);
     }
 }

@@ -47,11 +47,11 @@ require_once __DIR__ . '/../../includes/admin-header.php';
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th style="text-align: right;">Actions</th>
+                        <th style="width: 50%;">Title</th>
+                        <th style="width: 15%;">Author</th>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 10%;">Status</th>
+                        <th style="text-align: right; width: 10%; min-width: 80px; white-space: nowrap;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -80,6 +80,11 @@ return function (App $app) {
             return (new \App\Application\Controllers\AdminController())->media($request, $response);
         });
 
+        // AJAX Media upload endpoint
+        $group->post('/media/upload-ajax/', function (Request $request, Response $response) {
+            return (new \App\Application\Controllers\AdminController())->uploadAjax($request, $response);
+        });
+
         // Navigation menu editor
         $group->map(['GET', 'POST'], '/navigation/', function (Request $request, Response $response) {
             return (new \App\Application\Controllers\AdminController())->navigation($request, $response);
@@ -88,6 +93,11 @@ return function (App $app) {
         // Roles and privileges manager
         $group->get('/roles/', function (Request $request, Response $response) {
             return (new \App\Application\Controllers\AdminController())->roles($request, $response);
+        });
+
+        // User accounts manager
+        $group->map(['GET', 'POST'], '/users/', function (Request $request, Response $response) {
+            return (new \App\Application\Controllers\AdminController())->users($request, $response);
         });
     });
 

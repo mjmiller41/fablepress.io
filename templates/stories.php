@@ -1,7 +1,7 @@
 <?php
 $page_title = 'Stories';
-require_once __DIR__ . '/../includes/head.php';
-require_once __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/head.php';
+require __DIR__ . '/../includes/header.php';
 
 $db = get_db_connection();
 // Fetch all stories
@@ -30,7 +30,7 @@ try {
                     <?php else: ?>
                         <?php foreach ($stories as $story): 
                             // Simple excerpt builder
-                            $excerpt = strip_tags($story['content']);
+                            $excerpt = strip_tags(parse_markdown($story['content']));
                             if (strlen($excerpt) > 280) {
                                 $excerpt = substr($excerpt, 0, 275) . '...';
                             }
@@ -53,4 +53,4 @@ try {
         </section>
     </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

@@ -22,7 +22,7 @@ function render_header($title) {
         <title><?php echo htmlspecialchars($title); ?> - FablePress.io</title>
         <link rel="stylesheet" href="/assets/css/style.css">
         <link rel="stylesheet" href="/assets/css/admin.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/assets/vendor/font-awesome/css/all.min.css">
         <style>
             :root {
                 --color-ink: #1E242B;
