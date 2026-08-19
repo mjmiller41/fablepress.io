@@ -74,7 +74,7 @@ class AdminController {
      */
     public function login(Request $request, Response $response): Response {
         if (is_logged_in()) {
-            return $response->withHeader('Location', '/admin/')->withStatus(302);
+            return $response->withHeader('Location', '/admin/stories/')->withStatus(302);
         }
 
         $error = '';
@@ -94,7 +94,7 @@ class AdminController {
                     $_SESSION['user_role'] = $user['role'];
                     $_SESSION['username'] = $user['username'];
 
-                    return $response->withHeader('Location', '/admin/')->withStatus(302);
+                    return $response->withHeader('Location', '/admin/stories/')->withStatus(302);
                 } else {
                     $error = 'Invalid username or password.';
                 }
