@@ -1,5 +1,10 @@
+DirectoryIndex index.php index.html
+
 RewriteEngine On
 RewriteBase /
+
+# Route all /admin routes directly to Slim front-controller index.php
+RewriteRule ^admin(/.*)?$ index.php [QSA,L]
 
 # Exclude existing physical files and directories from rewrite rules
 RewriteCond %{REQUEST_FILENAME} -f [OR]
